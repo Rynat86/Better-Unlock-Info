@@ -1,0 +1,151 @@
+[
+    {
+        "UnlockType":1, "chests":
+        [
+            {"ChestId":"g_9", "UnlockType":1, "IconId":138},
+            {"ChestId":"g_10", "UnlockType":1, "IconId":139},
+            {"ChestId":"g_12", "UnlockType":1, "IconId":141},
+            {"ChestId":"g_13", "UnlockType":1, "IconId":142},
+            {"ChestId":"g_17", "UnlockType":1, "IconId":312},
+            {"ChestId":"g_19", "UnlockType":1, "IconId":315},
+            {"ChestId":"g_22", "UnlockType":1, "IconId":476},
+            {"ChestId":"g_23", "UnlockType":1, "IconId":467},
+            {"ChestId":"g_28", "UnlockType":1, "IconId":436},
+            {"ChestId":"g_29", "UnlockType":1, "IconId":326},
+            {"ChestId":"g_30", "UnlockType":1, "IconId":316},
+            {"ChestId":"g_33", "UnlockType":1, "IconId":397},
+            {"ChestId":"g_34", "UnlockType":1, "IconId":244},
+            {"ChestId":"g_39", "UnlockType":1, "IconId":303},
+            {"ChestId":"g_41", "UnlockType":1, "IconId":425},
+            {"ChestId":"g_42", "UnlockType":1, "IconId":377},
+            {"ChestId":"g_43", "UnlockType":1, "IconId":408},
+            {"ChestId":"g_44", "UnlockType":1, "IconId":453},
+            {"ChestId":"g_49", "UnlockType":1, "IconId":482},
+            {"ChestId":1, "UnlockType":1, "IconId":103},
+            {"ChestId":2, "UnlockType":1, "IconId":106},
+            {"ChestId":5, "UnlockType":1, "IconId":104},
+            {"ChestId":7, "UnlockType":1, "IconId":111},
+            {"ChestId":10, "UnlockType":1, "IconId":149},
+            {"ChestId":11, "UnlockType":1, "IconId":150},
+            {"ChestId":24, "UnlockType":1, "IconId":483},
+            {"ChestId":12, "UnlockType":1, "IconId":151},
+            {"ChestId":15, "UnlockType":1, "IconId":152},
+            {"ChestId":20, "UnlockType":1, "IconId":153},
+            {"ChestId":22, "UnlockType":1, "IconId":154},
+            {"ChestId":23, "UnlockType":1, "IconId":160},
+            {"ChestId":"pr_8", "UnlockType":1, "IconId":359}
+        ]
+    },
+    {
+        "UnlockType":2, "chests":
+        [
+            {"ChestId":16, "UnlockType":2, "IconId":85},
+            {"ChestId":19, "UnlockType":2, "IconId":92},
+            {"ChestId":"pr_2", "UnlockType":2, "IconId":83},
+            {"ChestId":"pr_4", "UnlockType":2, "IconId":104},
+            {"ChestId":"pr_6", "UnlockType":2, "IconId":61},
+            {"ChestId":"pr_10", "UnlockType":2, "IconId":76}
+        ]
+    },
+    {
+        "UnlockType":3, "chests":
+        [
+            {"ChestId":"g_1", "UnlockType":3, "IconId":30},
+            {"ChestId":"g_2", "UnlockType":3, "IconId":35},
+            {"ChestId":"g_3", "UnlockType":3, "IconId":34},
+            {"ChestId":"g_4", "UnlockType":3, "IconId":36},
+            {"ChestId":"g_5", "UnlockType":3, "IconId":29},
+            {"ChestId":"g_6", "UnlockType":3, "IconId":37},
+            {"ChestId":13, "UnlockType":3, "IconId":52},
+            {"ChestId":"pr_8", "UnlockType":3, "IconId":102}
+        ]
+    },
+    {
+        "UnlockType":4, "chests":
+        [
+            {"ChestId":"g_15", "UnlockType":4, "IconId":49},
+            {"ChestId":"g_20", "UnlockType":4, "IconId":96},
+            {"ChestId":"g_27", "UnlockType":4, "IconId":142},
+            {"ChestId":"g_40", "UnlockType":4, "IconId":166},
+            {"ChestId":"g_50", "UnlockType":4, "IconId":90},
+            {"ChestId":8, "UnlockType":4, "IconId":50},
+            {"ChestId":14, "UnlockType":4, "IconId":52},
+            {"ChestId":21, "UnlockType":4, "IconId":53},
+            {"ChestId":"pr_5", "UnlockType":4, "IconId":94},
+            {"ChestId":"pr_6", "UnlockType":4, "IconId":91},
+            {"ChestId":"pr_7", "UnlockType":4, "IconId":98}
+        ]
+    },
+    {
+        "UnlockType":5, "chests":
+        [
+            {"ChestId":"g_11", "UnlockType":5, "IconId":43},
+            {"ChestId":"g_16", "UnlockType":5, "IconId":67},
+            {"ChestId":"g_46", "UnlockType":5, "IconId":103},
+            {"ChestId":"g_48", "UnlockType":5, "IconId":82},
+            {"ChestId":4, "UnlockType":5, "IconId":23},
+            {"ChestId":9, "UnlockType":5, "IconId":41},
+            {"ChestId":18, "UnlockType":5, "IconId":44}
+        ]
+    },
+    {
+        "UnlockType":6, "chests":
+        [
+            {"ChestId":"g_21", "UnlockType":6, "IconId":137},
+            {"ChestId":"g_47", "UnlockType":6, "IconId":119},
+            {"ChestId":6, "UnlockType":6, "IconId":27},
+            {"ChestId":17, "UnlockType":6, "IconId":36},
+            {"ChestId":"pr_3", "UnlockType":6, "IconId":146}
+        ]
+    },
+    {
+        "UnlockType":7, "chests":
+        [
+            {"ChestId":"g_26", "UnlockType":7, "IconId":94},
+            {"ChestId":"g_37", "UnlockType":7, "IconId":90},
+            {"ChestId":"g_38", "UnlockType":7, "IconId":63},
+            {"ChestId":"g_45", "UnlockType":7, "IconId":49}
+        ]
+    },
+    {
+        "UnlockType":8, "chests":
+        [
+            {"ChestId":"g_7", "UnlockType":8, "IconId":16},
+            {"ChestId":"pr_2", "UnlockType":8, "IconId":48},
+            {"ChestId":"pr_4", "UnlockType":8, "IconId":40},
+            {"ChestId":"pr_9", "UnlockType":8, "IconId":66}
+        ]
+    },
+    {
+        "UnlockType":9, "chests":
+        [
+            {"ChestId":"g_8", "UnlockType":9, "IconId":10},
+            {"ChestId":"g_32", "UnlockType":9, "IconId":67}
+        ]
+    },
+    {
+        "UnlockType":11, "chests":
+        [
+            {"ChestId":"g_14", "UnlockType":11, "IconId":17},
+            {"ChestId":2, "UnlockType":11, "IconId":12}
+        ]
+    },
+    {
+        "UnlockType":12, "chests":
+        [
+            {"ChestId":"g_7", "UnlockType":12, "IconId":1},
+            {"ChestId":2, "UnlockType":12, "IconId":5},
+            {"ChestId":3, "UnlockType":12, "IconId":3},
+            {"ChestId":4, "UnlockType":12, "IconId":2}
+        ]
+    },
+    {
+        "UnlockType":13, "chests":
+        [
+            {"ChestId":"g_35", "UnlockType":13, "IconId":16},
+            {"ChestId":"g_36", "UnlockType":13, "IconId":31},
+            {"ChestId":"pr_1", "UnlockType":13, "IconId":19},
+            {"ChestId":"pr_10", "UnlockType":13, "IconId":36}
+        ]
+    }
+]
