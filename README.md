@@ -8,6 +8,7 @@ achievemets were taken from ghidra i think (i dont remember xd)
 
 ### todo :
 - likes on lvl (+ rate) progress bar (lazy tho so dont expect)
+- fix glow 2.2 bug
 
 ### ideas (maybe) :
 - change buy popup to include `my colors` and icon name + number
