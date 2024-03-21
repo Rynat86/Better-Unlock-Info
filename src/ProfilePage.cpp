@@ -5,16 +5,9 @@
 //adds jetpack and death effect to profile and makes icons into buttons that show unlock popup, fps warning popoup if funny
 class $modify(MyProfilePage, ProfilePage) 
 {
-	TodoReturn getUserInfoFinished(GJUserScore* p0) 
+	TodoReturn loadPageFromUserInfo(GJUserScore* p0) 
     {
-		ProfilePage::getUserInfoFinished(p0);
-        
-        if (Mod::get()->getSettingValue<bool>("jetpackToggle"))
-            addJetpack();
-        
-        if (Mod::get()->getSettingValue<bool>("deathEffectToggle"))
-            addDeathEffect();
-        
+		ProfilePage::loadPageFromUserInfo(p0);
         
         //replaces icons with buttons
         std::list<std::string> ids;
@@ -22,9 +15,46 @@ class $modify(MyProfilePage, ProfilePage)
             ids.push_back(node->getID());
         for (auto id : ids)
             replacePlayerIconNodeWithButton(id);
-
-
+        
+        //adds jetpack and death
+        if (Mod::get()->getSettingValue<bool>("jetpackToggle"))
+            addJetpack();
+        
+        if (Mod::get()->getSettingValue<bool>("deathEffectToggle"))
+            addDeathEffect();
+        
+        //update layout
         m_mainLayer->getChildByID("player-menu")->updateLayout();
+        
+        //warning for fps drops
+        int profileCount = 0;
+        for (auto node : CCArrayExt<CCNode*>(CCScene::get()->getChildren()))
+            if (typeinfo_cast<ProfilePage*>(node) != nullptr)
+                profileCount++;
+        
+        if (profileCount == 3) 
+            if (!Mod::get()->setSavedValue("shown-profile-fps-popup", true))
+            {
+                auto popup = FLAlertLayer::create("Note", "If you continue doing this your fps will drop a lot so be careful", "OK");
+                popup->m_scene = this;
+                popup->show();
+            }
+            
+        //if no jetpack    
+        if (!Mod::get()->getSettingValue<bool>("jetpackToggle") && !Mod::get()->getSavedValue<bool>("shown-no-jetpack"))
+        { 
+            auto popup = geode::createQuickPopup(
+            "No Jetpack", "Without the Jetpack enabled you won't be able to see the Jetpack at all, not even by clicking the ship icon",
+            "OK", "Don't show agian",
+            [](auto, bool btn2)
+            { 
+                if (btn2)
+                    Mod::get()->setSavedValue<bool>(("shown-no-jetpack"), true);
+            }, false);
+            
+            popup->m_scene = this;
+            popup->show();
+        }
 	}
     
     void addJetpack()
@@ -36,12 +66,10 @@ class $modify(MyProfilePage, ProfilePage)
         jetpackPlayer->setScale(0.95f);
 
         //set colors
-        auto mainColor = getChildOfType<CCSprite>(GJItemIcon::createBrowserItem(UnlockType::Col1, m_score->m_color1), 0);
-        auto secondColor = getChildOfType<CCSprite>(GJItemIcon::createBrowserItem(UnlockType::Col2, m_score->m_color2), 0);
-        auto glowColor = getChildOfType<CCSprite>(GJItemIcon::createBrowserItem(UnlockType::Col2, m_score->m_color3), 0);
-        jetpackPlayer->setColor(mainColor->getColor());
-        jetpackPlayer->setSecondColor(secondColor->getColor());
-        if (m_score->m_glowEnabled) jetpackPlayer->setGlowOutline(glowColor->getColor());
+        auto GM = GameManager::get();
+        jetpackPlayer->setColor(GM->colorForIdx(m_score->m_color1));
+        jetpackPlayer->setSecondColor(GM->colorForIdx(m_score->m_color2));
+        if (m_score->m_glowEnabled) jetpackPlayer->setGlowOutline(GM->colorForIdx(m_score->m_color3));
 
         //add and set up button
         auto jetpackButton = CCMenuItemSpriteExtra::create(jetpackPlayer, this, menu_selector(MyProfilePage::onIconClick));
@@ -80,27 +108,29 @@ class $modify(MyProfilePage, ProfilePage)
     }
     
     void replacePlayerIconNodeWithButton(const std::string &nodeId)
-    {
-        //jetpack, death effect is already set
-        if (nodeId == "player-jetpack" || nodeId == "player-deathEffect") return;
-    
+    {    
         //creates button from icon        
         auto iconPlayer = getChildOfType<SimplePlayer>(m_mainLayer->getChildByIDRecursive(nodeId), 0);
-        auto iconButton = CCMenuItemSpriteExtra::create(iconPlayer, this, menu_selector(MyProfilePage::onIconClick));
-        iconButton->setContentSize(CCSize(42.6f, 42.6f));
-        if (nodeId == "player-wave") iconButton->setContentSize(CCSize(36.6f, 42.6f));
-        
-        //adds to row
-        m_mainLayer->getChildByID("player-menu")->addChild(iconButton);
+        auto iconButton = CCMenuItemSpriteExtra::create(CCSprite::create(), this, menu_selector(MyProfilePage::onIconClick));
         
         //swaps witch original so its on correct place
+        m_mainLayer->getChildByID("player-menu")->addChild(iconButton);
         swapChildIndices(m_mainLayer->getChildByIDRecursive(nodeId), iconButton);
         m_mainLayer->getChildByID("player-menu")->removeChildByID(nodeId);
         
-        //fix
+        //conflict animated profiles
+        iconButton->removeAllChildren();
+        iconButton->addChild(iconPlayer);
+        
+        //size
+        iconButton->setContentSize(CCSize(42.6f, 42.6f));
+        if (nodeId == "player-wave") iconButton->setContentSize(CCSize(36.6f, 42.6f));
+        
+        //fix pos
         iconPlayer->setPosition(CCPoint(21.3f, 21.3f));
         
         iconButton->setID(nodeId);
+        iconPlayer->setTag(1);
     }
 
     IconObject getUnlockData(std::string buttonID, GJUserScore* m_score)
@@ -132,14 +162,5 @@ class $modify(MyProfilePage, ProfilePage)
         
         IconObject icon = getUnlockData(button->getID(), m_score);
         ItemInfoPopup::create(icon.iconId, icon.unlockType)->show();
-        
-        //warning for fps drops
-        int profileCount = 0;
-        for (auto node : CCArrayExt<CCNode*>(CCScene::get()->getChildren()))
-            if (typeinfo_cast<ProfilePage*>(node) != nullptr)
-                profileCount++;
-        if (profileCount == 3) 
-            if (!Mod::get()->setSavedValue("shown-profile-fps-popup", true))
-                FLAlertLayer::create("Note", "If you continue doing this your fps will drop a lot so be careful", "OK")->show();
 	}
 };

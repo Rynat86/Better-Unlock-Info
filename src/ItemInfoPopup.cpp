@@ -15,8 +15,13 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         addDetailButton(IconId, UnlockType);
         if (UnlockType == UnlockType::ShipFire || UnlockType == UnlockType::GJItem) return true; //note, icon type for isIconUnlocked()
         {
-            addEquipButton(IconId, UnlockType);
-            addCompletionProgress(IconId, UnlockType);
+            if (!(Mod::get()->getSettingValue<bool>("equipToggle")))
+                addEquipButton(IconId, UnlockType);
+            
+            if (!(Mod::get()->getSettingValue<bool>("progressToggle")))
+                addCompletionProgress(IconId, UnlockType);
+            else
+                addCompletionIconOnly(IconId, UnlockType);
         }
         
         //moves credit
@@ -43,8 +48,10 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         bool exists = std::find(std::begin(badUnlocks), std::end(badUnlocks), static_cast<int>(UnlockType)) != std::end(badUnlocks);
         if (exists) return true;
         
-        iconSwap(IconId, UnlockType, false);    
-        addCheckBox();
+        iconSwap(IconId, UnlockType, false);
+        
+        if (!(Mod::get()->getSettingValue<bool>("useMyColorsToggle")))   
+        adduseMyColorsCheckBox();
         
         
         
@@ -76,13 +83,39 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         if (OnProfile)
         {
             //finds clicked icon
-            auto userIconButton = m_fields->profileList.back()->getChildByIDRecursive("player-menu")->getChildByTag(1);
+            auto profile = m_fields->profileList.back();
+            auto userIconButton = profile->getChildByIDRecursive("player-menu")->getChildByTag(1);
             userIconButton->setTag(-1);
         
             //copies icon from profile
             auto userIcon = SimplePlayer::create(0);
-            userIcon->removeAllChildren();
-            userIcon->addChild(getChildOfType<CCSprite>(userIconButton->getChildByTag(1), 0));
+            
+            //conflict animated profiles
+            if (Loader::get()->isModLoaded("thesillydoggo.animatedprofiles") && unlockType == UnlockType::Robot || unlockType == UnlockType::Spider)
+            {
+                userIcon->updatePlayerFrame(iconId, UnlockToIcon(unlockType));
+                
+                auto GM = GameManager::get();
+                userIcon->setColor(GM->colorForIdx(profile->m_score->m_color1));
+                userIcon->setSecondColor(GM->colorForIdx(profile->m_score->m_color2));
+                if (profile->m_score->m_glowEnabled) userIcon->setGlowOutline(GM->colorForIdx(profile->m_score->m_color3));
+                
+                if (unlockType == UnlockType::Robot)
+                {
+                    userIcon->createRobotSprite(iconId);
+                    userIcon->m_robotSprite->runAnimation("idle01");
+                }
+                if (unlockType == UnlockType::Spider)
+                {
+                    userIcon->createSpiderSprite(iconId);
+                    userIcon->m_spiderSprite->runAnimation("idle01");
+                }
+            }
+            else
+            {
+                userIcon->removeAllChildren();
+                userIcon->addChild(getChildOfType<CCSprite>(userIconButton->getChildByTag(1), 0));
+            }
             userIcon->setScale(1);
             userIcon->setPosition(CCPoint(15, 15));
 
@@ -98,17 +131,29 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         myColorIcon->setID("useMyColorsToggle");
         myColorIcon->setTag(2);
         myColorIcon->setVisible(false);
-            
-        auto mainColor = getChildOfType<CCSprite>(GJItemIcon::createBrowserItem(UnlockType::Col1, GameManager::get()->getPlayerColor()), 0);
-        auto secColor = getChildOfType<CCSprite>(GJItemIcon::createBrowserItem(UnlockType::Col2, GameManager::get()->getPlayerColor2()), 0);
-        auto glowColor = getChildOfType<CCSprite>(GJItemIcon::createBrowserItem(UnlockType::Col2, GameManager::get()->getPlayerGlowColor()), 0);
-            
+        
+        auto GM = GameManager::get();
         auto myColorIconPlayer = getChildOfType<SimplePlayer>(myColorIcon, 0);
-        myColorIconPlayer->setColor(mainColor->getColor());
-        myColorIconPlayer->setSecondColor(secColor->getColor());
-        myColorIconPlayer->setGlowOutline(glowColor->getColor());
-        if (!GameManager::get()->m_playerGlow) myColorIconPlayer->disableGlowOutline();
-            
+        myColorIconPlayer->setColor(GM->colorForIdx(GM->getPlayerColor()));
+        myColorIconPlayer->setSecondColor(GM->colorForIdx(GM->getPlayerColor2()));
+        myColorIconPlayer->setGlowOutline(GM->colorForIdx(GM->getPlayerGlowColor()));
+        if (!GM->m_playerGlow) myColorIconPlayer->disableGlowOutline();
+        
+        //conflict animated profiles
+        if (Loader::get()->isModLoaded("thesillydoggo.animatedprofiles"))
+        {
+            if (unlockType == UnlockType::Robot)
+            {
+                myColorIconPlayer->createRobotSprite(iconId);
+                myColorIconPlayer->m_robotSprite->runAnimation("idle01");
+            }
+            if (unlockType == UnlockType::Spider)
+            {
+                myColorIconPlayer->createSpiderSprite(iconId);
+                myColorIconPlayer->m_spiderSprite->runAnimation("idle01");
+            }
+        }
+        
         CCSize screenSize = CCDirector::sharedDirector()->getWinSize();
         myColorIcon->setPosition(CCPoint(screenSize.width / 2, originalIcon->getPositionY()));
         myColorIcon->setScale(1.25f);
@@ -202,13 +247,13 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         ItemInfoPopup::create(parameters->m_IconId, parameters->m_UnlockType)->show();
     }
     
-    void addCheckBox()
+    void adduseMyColorsCheckBox()
     {
         //adds menu
         auto menu = CCMenu::create();
         menu->setID("checkbox-menu");
-        handleTouchPriority(this);
         menu->setScale(0.35f);
+        handleTouchPriority(this);
         
         auto check = CCMenuItemToggler::createWithStandardSprites(this, menu_selector(MyItemInfoPopup::onUseMyColorsToggle), 1);
     
@@ -527,6 +572,10 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
     std::string textFromArea()
     {
         TextArea* textArea = getChildOfType<TextArea>(m_mainLayer, 0);
+        
+        //conflict MH
+        if (textArea == nullptr) return std::string("unlock 2.21");
+        
         std::string labelText = "";
         for (CCLabelBMFont* label : CCArrayExt<CCLabelBMFont*>(textArea->m_label->getChildren()) )
             labelText.append(label->getString());
@@ -906,6 +955,25 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         m_mainLayer->addChild(menu);
         
         CCSpriteFrameCache::sharedSpriteFrameCache()->removeSpriteFramesFromFile("GauntletSheet.plist");
+    }
+    
+    void addCompletionIconOnly(int iconId, UnlockType unlockType)
+    {
+        if (textFromArea().find("2.21") != std::string::npos) return; //note, 2.21
+        
+        CCMenu* originalMenu = getChildOfType<CCMenu>(m_mainLayer, 0);
+        CCSprite* icon = CCSprite::createWithSpriteFrameName("GJ_lock_001.png");
+        icon->setID("completionIcon");
+        icon->setScale(0.6f);
+        
+        if (trueIsItemUnlocked(iconId, unlockType))
+        {
+            icon = CCSprite::createWithSpriteFrameName("GJ_achImage_001.png");
+            icon->setScale(0.55f);
+        }
+        
+        originalMenu->addChild(icon);
+        icon->setPosition(CCPoint(118, 35));
     }
     
     IconType UnlockToIcon(UnlockType unlockType)
