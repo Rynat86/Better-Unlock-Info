@@ -48,9 +48,10 @@ class $modify(PurchaseItemPopup)
                 iconButton->addChild(newIcon);
                 
                 garage->removeChildByID("dummyInfoNode");
+                
+                CCScene::get()->removeChild(getChildOfType<ItemInfoPopup>(CCScene::get(), 0));
             }
             
-            CCScene::get()->removeChild(getChildOfType<ItemInfoPopup>(CCScene::get(), 0));
         }
     }
     
