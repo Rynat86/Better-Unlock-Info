@@ -1,5 +1,6 @@
 # v1.0.3
  - Fixed crash when purchasing Paths
+ - Fixed crash when blocking Users
 
 # v1.0.2
  - Added options to disable some UI elements
