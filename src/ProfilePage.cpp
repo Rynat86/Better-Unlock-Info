@@ -9,10 +9,10 @@ class $modify(MyProfilePage, ProfilePage)
     {
 		ProfilePage::loadPageFromUserInfo(p0);
         
-        //replaces icons with buttons
-        std::list<std::string> ids;
         if (m_mainLayer->getChildByID("player-menu") == nullptr) return;
         
+        //replaces icons with buttons
+        std::list<std::string> ids;
         for (auto node : CCArrayExt<CCNode*>(m_mainLayer->getChildByID("player-menu")->getChildren()))
             ids.push_back(node->getID());
         for (auto id : ids)
