@@ -900,21 +900,22 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         if (currentValue >= 1000)
         {
             float newCurrent = std::round((static_cast<float>(currentValue) / 1000) * 10) / 10;
-            labelCount = CCLabelBMFont::create(std::format("{}", newCurrent).append("K").c_str(), "bigFont.fnt");
+            
+            labelCount = CCLabelBMFont::create(fmt::format("{}", newCurrent).append("K").c_str(), "bigFont.fnt");
             if (currentValue >= 1000000)
             {
                 newCurrent = std::round((static_cast<float>(currentValue) / 1000000) * 10) / 10;
-                labelCount = CCLabelBMFont::create(std::format("{}", newCurrent).append("M").c_str(), "bigFont.fnt");
+                labelCount = CCLabelBMFont::create(fmt::format("{}", newCurrent).append("M").c_str(), "bigFont.fnt");
             }
         }
         if (maxValue >= 1000)
         {
             float newMax = std::round((static_cast<float>(maxValue) / 1000) * 10) / 10;
-            labelMax = CCLabelBMFont::create(std::format("{}", newMax).append("K").c_str(), "bigFont.fnt");
+            labelMax = CCLabelBMFont::create(fmt::format("{}", newMax).append("K").c_str(), "bigFont.fnt");
             if (maxValue >= 1000000)
             {
                 newMax = std::round((static_cast<float>(maxValue) / 1000000) * 10) / 10;
-                labelMax = CCLabelBMFont::create(std::format("{}", newMax).append("M").c_str(), "bigFont.fnt");
+                labelMax = CCLabelBMFont::create(fmt::format("{}", newMax).append("M").c_str(), "bigFont.fnt");
             }
         }
             
