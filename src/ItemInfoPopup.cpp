@@ -66,8 +66,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
 
         iconSwap(IconId, UnlockType, true);
         addColors();
-
-        handleTouchPriority(m_fields->profileList.back()->m_mainLayer->getChildByID("player-menu"));
+ 
         return true;
     }
     
