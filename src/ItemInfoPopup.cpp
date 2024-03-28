@@ -6,7 +6,7 @@
 //replaces grayscale icon with users, adds colors and rest aka lazy to write - in about.md
 class $modify(MyItemInfoPopup, ItemInfoPopup) 
 {
-    std::list<ProfilePage*> profileList;
+    std::vector<ProfilePage*> profileList;
     
     bool init(int IconId, UnlockType UnlockType) 
     {
@@ -62,7 +62,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         m_fields->profileList.clear();
         for (auto node : CCArrayExt<CCNode*>(CCScene::get()->getChildren()))
             if (typeinfo_cast<ProfilePage*>(node) != nullptr)
-                m_fields->profileList.push_back(static_cast<ProfilePage*>(node));        
+                m_fields->profileList.push_back(static_cast<ProfilePage*>(node));
 
         iconSwap(IconId, UnlockType, true);
         addColors();
