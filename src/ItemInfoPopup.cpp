@@ -91,7 +91,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
             auto userIcon = SimplePlayer::create(0);
             
             //conflict animated profiles
-            if (Loader::get()->isModLoaded("thesillydoggo.animatedprofiles") && unlockType == UnlockType::Robot || unlockType == UnlockType::Spider)
+            if (Loader::get()->isModLoaded("thesillydoggo.animatedprofiles") && (unlockType == UnlockType::Robot || unlockType == UnlockType::Spider))
             {
                 userIcon->updatePlayerFrame(iconId, UnlockToIcon(unlockType));
                 
