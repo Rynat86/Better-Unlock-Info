@@ -22,7 +22,7 @@ class $modify(MyProfilePage, ProfilePage)
         if (Mod::get()->getSettingValue<bool>("jetpackToggle"))
             addJetpack();
         
-        if (Mod::get()->getSettingValue<bool>("deathEffectToggle") && !m_somethingWentWrong->isVisible())
+        if (Mod::get()->getSettingValue<bool>("deathEffectToggle"))
             addDeathEffect();
         
         //update layout
@@ -86,6 +86,9 @@ class $modify(MyProfilePage, ProfilePage)
     
     void addDeathEffect()
     {
+        //invalid check
+        if(m_score->m_playerExplosion <= 0 || m_score->m_playerExplosion > 20) return;
+        
         //set up icon
         SimplePlayer* deathEffectPlayer = SimplePlayer::create(0);
         deathEffectPlayer->removeAllChildren();
