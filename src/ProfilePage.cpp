@@ -58,13 +58,6 @@ class $modify(MyProfilePage, ProfilePage)
             popup->show();
         }
         
-        //fix android touch
-        if (auto delegate = typeinfo_cast<CCTouchDelegate*>(static_cast<CCMenu*>(m_mainLayer->getChildByID("player-menu"))))
-            if (auto handler = CCTouchDispatcher::get()->findHandler(delegate))
-            {
-                auto priority = handler->getPriority();
-                CCTouchDispatcher::get()->setPriority(priority-1, handler->getDelegate());
-            }
 	}
     
     void addJetpack()
