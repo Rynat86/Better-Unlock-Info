@@ -5,7 +5,7 @@
 //adds jetpack and death effect to profile and makes icons into buttons that show unlock popup, fps warning popoup if funny
 class $modify(MyProfilePage, ProfilePage) 
 {
-	TodoReturn loadPageFromUserInfo(GJUserScore* p0) 
+	void loadPageFromUserInfo(GJUserScore* p0) 
     {
 		ProfilePage::loadPageFromUserInfo(p0);
         
@@ -22,7 +22,7 @@ class $modify(MyProfilePage, ProfilePage)
         if (Mod::get()->getSettingValue<bool>("jetpackToggle"))
             addJetpack();
         
-        if (Mod::get()->getSettingValue<bool>("deathEffectToggle"))
+        if (Mod::get()->getSettingValue<bool>("deathEffectToggle") && !m_somethingWentWrong->isVisible())
             addDeathEffect();
         
         //update layout
