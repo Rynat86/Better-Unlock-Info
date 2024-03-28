@@ -27,6 +27,7 @@ class $modify(MyProfilePage, ProfilePage)
         
         //update layout
         m_mainLayer->getChildByID("player-menu")->updateLayout();
+        handleTouchPriority(m_mainLayer->getChildByID("player-menu"));
         
         //warning for fps drops
         int profileCount = 0;
