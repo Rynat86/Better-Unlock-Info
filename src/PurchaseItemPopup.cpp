@@ -17,7 +17,9 @@ class $modify(PurchaseItemPopup)
             GJGarageLayer* garage = getChildOfType<GJGarageLayer>(scene, 0);
             if (garage != nullptr)
             {
+                log::info("{}", garage->getChildByID("dummyInfoNode")==nullptr);
                 auto parameters = static_cast<BetterUnlockInfo_Params*>(garage->getChildByID("dummyInfoNode")->getUserObject());
+                log::info("hi ?");
                 
                 //udpate money label
                 CCLabelBMFont* money = static_cast<CCLabelBMFont*>(garage->getChildByID("orbs-label"));
