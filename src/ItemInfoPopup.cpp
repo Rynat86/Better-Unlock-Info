@@ -372,6 +372,8 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
                                     item["ShopType"].as_int()
                                 ));
                                 garage->addChild(dummy);
+                                
+                                CC_SAFE_RETAIN(dummy);
                                 log::info("work ???");
                                 log::info("{}", garage->getChildrenCount());
                             }

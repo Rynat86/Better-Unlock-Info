@@ -52,7 +52,7 @@ class $modify(PurchaseItemPopup)
                 iconButton->addChild(newIcon);
                 */
                 garage->removeChildByID("dummyInfoNode");
-                
+                CC_SAFE_RELEASE(garage->getChildByID("dummyInfoNode"));
                 scene->removeChild(getChildOfType<ItemInfoPopup>(scene, 0));
             }
             
