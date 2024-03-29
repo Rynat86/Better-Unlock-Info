@@ -9,11 +9,12 @@ class $modify(PurchaseItemPopup)
     {
         PurchaseItemPopup::onPurchase(sender);
         
-        if (getChildOfType<GJShopLayer>(CCScene::get(), 0) == nullptr)
+        auto scene = CCScene::get();
+        if (getChildOfType<GJShopLayer>(scene, 0) == nullptr)
         {
             FMODAudioEngine::sharedEngine()->playEffect("buyItem01.ogg");
             
-            GJGarageLayer* garage = getChildOfType<GJGarageLayer>(CCScene::get(), 0);
+            GJGarageLayer* garage = getChildOfType<GJGarageLayer>(scene, 0);
             if (garage != nullptr)
             {
                 auto parameters = static_cast<BetterUnlockInfo_Params*>(garage->getChildByID("dummyInfoNode")->getUserObject());
@@ -49,8 +50,12 @@ class $modify(PurchaseItemPopup)
                 
                 garage->removeChildByID("dummyInfoNode");
                 
-                CCScene::get()->removeChild(getChildOfType<ItemInfoPopup>(CCScene::get(), 0));
+                scene->removeChild(getChildOfType<ItemInfoPopup>(scene, 0));
             }
+            
+            ProfilePage* profile = getChildOfType<ProfilePage>(scene, 0);
+            if (profile != nullptr)
+                scene->removeChild(static_cast<CCNode*>(scene->getChildren()->objectAtIndex(scene->getChildrenCount()-1)));
             
         }
     }

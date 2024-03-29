@@ -67,7 +67,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         iconSwap(IconId, UnlockType, true);
         addColors();
         
-        //fix android touch
+        //fix android touch - thx devtools :yep:
         if (auto delegate = typeinfo_cast<CCTouchDelegate*>(m_fields->profileList.back()))
             if (auto handler = CCTouchDispatcher::get()->findHandler(delegate))
                 if (auto delegate2 = typeinfo_cast<CCTouchDelegate*>(static_cast<CCMenu*>(m_fields->profileList.back()->m_mainLayer->getChildByID("player-menu"))))
