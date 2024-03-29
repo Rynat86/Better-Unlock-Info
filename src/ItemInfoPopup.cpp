@@ -373,6 +373,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
                                 ));
                                 garage->addChild(dummy);
                                 log::info("work ???");
+                                log::info("{}", garage->getChildrenCount());
                             }
                             
                             //buy popup
