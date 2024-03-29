@@ -17,6 +17,7 @@ class $modify(PurchaseItemPopup)
             GJGarageLayer* garage = getChildOfType<GJGarageLayer>(scene, 0);
             if (garage != nullptr)
             {
+                log::info("{}", garage->getChildrenCount());
                 log::info("{}", garage->getChildByID("dummyInfoNode")==nullptr);
                 auto parameters = static_cast<BetterUnlockInfo_Params*>(garage->getChildByID("dummyInfoNode")->getUserObject());
                 log::info("hi ?");
