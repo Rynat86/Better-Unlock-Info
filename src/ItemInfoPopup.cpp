@@ -12,6 +12,15 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
     {
         if (!ItemInfoPopup::init(IconId, UnlockType)) return false; 
         
+        GJGarageLayer* garage = getChildOfType<GJGarageLayer>(CCScene::get(), 0);
+        if (garage != nullptr)
+        {
+            CCNode* dummy = CCNode::create();
+            dummy->setID("funnode");
+            garage->addChild(dummy);
+        }
+        
+        
         addDetailButton(IconId, UnlockType);
         if (UnlockType == UnlockType::ShipFire || UnlockType == UnlockType::GJItem) return true; //note, icon type for isIconUnlocked()
         {

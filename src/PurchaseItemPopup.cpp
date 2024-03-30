@@ -19,6 +19,7 @@ class $modify(PurchaseItemPopup)
             {
                 log::info("{}", garage->getChildrenCount());
                 log::info("{}", garage->getChildByID("dummyInfoNode")==nullptr);
+                log::info("{}", garage->getChildByID("funnode")==nullptr);
                 auto parameters = static_cast<BetterUnlockInfo_Params*>(garage->getChildByID("dummyInfoNode")->getUserObject());
                 log::info("hi ?");
                 
