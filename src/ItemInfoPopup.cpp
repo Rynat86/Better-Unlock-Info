@@ -7,7 +7,7 @@
 class $modify(MyItemInfoPopup, ItemInfoPopup) 
 {
     static void onModify(auto& self) {
-        self.setHookPriority("ItemInfoPopup::init", 10000);
+        self.setHookPriority("ItemInfoPopup::init", -1000);
     }
     
     std::vector<ProfilePage*> profileList;
@@ -32,7 +32,6 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         for (auto button : CCArrayExt<CCMenuItemSpriteExtra*>(getChildOfType<CCMenu>(m_mainLayer, 0)->getChildren()))
             if (typeinfo_cast<CCLabelBMFont*>(button->getChildByTag(1)) != nullptr)
             {
-                log::info("{}", button->getID());
                 if (button->getID()[0] == 'c')
                 {
                     button->removeFromParent(); //sorry cvolton
