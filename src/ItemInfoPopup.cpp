@@ -364,7 +364,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
                             if (garage != nullptr)
                             {
                                 CCNode* dummy = CCNode::create();
-                                dummy->setID("dummyInfoNode");
+                                dummy->setID("BUInode");
                                 dummy->setUserObject(new BetterUnlockInfo_Params(
                                     item["IconId"].as_int(), 
                                     static_cast<UnlockType>(item["UnlockType"].as_int()), 
@@ -373,15 +373,6 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
                                 ));
                                 garage->addChild(dummy);
                                 
-                                CCNode* dummy2 = CCNode::create();
-                                dummy2->setID("lolfun");
-                                dummy2->setUserObject(new BetterUnlockInfo_Params(
-                                    item["IconId"].as_int(), 
-                                    static_cast<UnlockType>(item["UnlockType"].as_int()), 
-                                    item["Price"].as_int(),
-                                    item["ShopType"].as_int()
-                                ));
-                                garage->addChild(dummy2);
                                 
                                 log::info("work ???");
                                 log::info("{}", garage->getChildrenCount());
