@@ -6,6 +6,10 @@
 //replaces grayscale icon with users, adds colors and rest aka lazy to write - in about.md
 class $modify(MyItemInfoPopup, ItemInfoPopup) 
 {
+    static void onModify(auto& self) {
+        self.setHookPriority("ItemInfoPopup::init", 10000);
+    }
+    
     std::vector<ProfilePage*> profileList;
     
     bool init(int IconId, UnlockType UnlockType) 
