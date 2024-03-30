@@ -6,11 +6,15 @@
 //replaces grayscale icon with users, adds colors and rest aka lazy to write - in about.md
 class $modify(MyItemInfoPopup, ItemInfoPopup) 
 {
+    static void onModify(auto& self) {
+        self.setHookPriority("ItemInfoPopup::init", -1000);
+    }
+    
     std::vector<ProfilePage*> profileList;
     
     bool init(int IconId, UnlockType UnlockType) 
     {
-        if (!ItemInfoPopup::init(IconId, UnlockType)) return false; 
+        if (!ItemInfoPopup::init(IconId, UnlockType)) return false;
         
         addDetailButton(IconId, UnlockType);
         if (UnlockType == UnlockType::ShipFire || UnlockType == UnlockType::GJItem) return true; //note, icon type for isIconUnlocked()
@@ -364,7 +368,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
                             if (garage != nullptr)
                             {
                                 CCNode* dummy = CCNode::create();
-                                dummy->setID("dummyInfoNode");
+                                dummy->setID("BUInode");
                                 dummy->setUserObject(new BetterUnlockInfo_Params(
                                     item["IconId"].as_int(), 
                                     static_cast<UnlockType>(item["UnlockType"].as_int()), 
@@ -372,8 +376,6 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
                                     item["ShopType"].as_int()
                                 ));
                                 garage->addChild(dummy);
-                                log::info("work ???");
-                                log::info("{}", garage->getChildrenCount());
                             }
                             
                             //buy popup
