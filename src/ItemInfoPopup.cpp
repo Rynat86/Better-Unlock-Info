@@ -372,10 +372,6 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
                                     item["ShopType"].as_int()
                                 ));
                                 garage->addChild(dummy);
-                                
-                                
-                                log::info("work ???");
-                                log::info("{}", garage->getChildrenCount());
                             }
                             
                             //buy popup

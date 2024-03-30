@@ -17,18 +17,14 @@ class $modify(PurchaseItemPopup)
             GJGarageLayer* garage = getChildOfType<GJGarageLayer>(scene, 0);
             if (garage != nullptr)
             {
-                log::info("{}", garage->getChildrenCount());
-                log::info("{}", garage->getChildByID("dummyInfoNode")==nullptr);
-                log::info("{}", garage->getChildByID("BUInode")==nullptr);
-                auto parameters = static_cast<BetterUnlockInfo_Params*>(garage->getChildByID("dummyInfoNode")->getUserObject());
-                log::info("hi ?");
+                auto parameters = static_cast<BetterUnlockInfo_Params*>(garage->getChildByID("BUInode")->getUserObject());
                 
                 //udpate money label
                 CCLabelBMFont* money = static_cast<CCLabelBMFont*>(garage->getChildByID("orbs-label"));
                 if (parameters->m_ShopType == 4)
                     money = static_cast<CCLabelBMFont*>(garage->getChildByID("diamond-shards-label"));
                 money->setString(std::to_string(std::atoi(money->getString()) - parameters->m_Price).c_str());
-                /*
+                
                 //update icon
                 CCMenuItemSpriteExtra* iconButton = static_cast<CCMenuItemSpriteExtra*>(
                     getChildOfType<CCMenu>(
@@ -51,8 +47,8 @@ class $modify(PurchaseItemPopup)
                 newIcon->setPosition(CCPoint(15, 15));
                 newIcon->setScale(0.8f);
                 iconButton->addChild(newIcon);
-                */
-                garage->removeChildByID("dummyInfoNode");
+                
+                garage->removeChildByID("BUInode");
 
                 scene->removeChild(getChildOfType<ItemInfoPopup>(scene, 0));
             }
