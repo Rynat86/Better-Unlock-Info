@@ -10,16 +10,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
     
     bool init(int IconId, UnlockType UnlockType) 
     {
-        if (!ItemInfoPopup::init(IconId, UnlockType)) return false; 
-        
-        GJGarageLayer* garage = getChildOfType<GJGarageLayer>(CCScene::get(), 0);
-        if (garage != nullptr)
-        {
-            CCNode* dummy = CCNode::create();
-            dummy->setID("funnode");
-            garage->addChild(dummy);
-        }
-        
+        if (!ItemInfoPopup::init(IconId, UnlockType)) return false;
         
         addDetailButton(IconId, UnlockType);
         if (UnlockType == UnlockType::ShipFire || UnlockType == UnlockType::GJItem) return true; //note, icon type for isIconUnlocked()
@@ -382,7 +373,16 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
                                 ));
                                 garage->addChild(dummy);
                                 
-                                CC_SAFE_RETAIN(dummy);
+                                CCNode* dummy2 = CCNode::create();
+                                dummy2->setID("lolfun");
+                                dummy2->setUserObject(new BetterUnlockInfo_Params(
+                                    item["IconId"].as_int(), 
+                                    static_cast<UnlockType>(item["UnlockType"].as_int()), 
+                                    item["Price"].as_int(),
+                                    item["ShopType"].as_int()
+                                ));
+                                garage->addChild(dummy2);
+                                
                                 log::info("work ???");
                                 log::info("{}", garage->getChildrenCount());
                             }

@@ -19,7 +19,7 @@ class $modify(PurchaseItemPopup)
             {
                 log::info("{}", garage->getChildrenCount());
                 log::info("{}", garage->getChildByID("dummyInfoNode")==nullptr);
-                log::info("{}", garage->getChildByID("funnode")==nullptr);
+                log::info("{}", garage->getChildByID("lolfun")==nullptr);
                 auto parameters = static_cast<BetterUnlockInfo_Params*>(garage->getChildByID("dummyInfoNode")->getUserObject());
                 log::info("hi ?");
                 
@@ -53,7 +53,7 @@ class $modify(PurchaseItemPopup)
                 iconButton->addChild(newIcon);
                 */
                 garage->removeChildByID("dummyInfoNode");
-                CC_SAFE_RELEASE(garage->getChildByID("dummyInfoNode"));
+
                 scene->removeChild(getChildOfType<ItemInfoPopup>(scene, 0));
             }
             
