@@ -5,6 +5,10 @@
 //adds jetpack and death effect to profile and makes icons into buttons that show unlock popup, fps warning popoup if funny
 class $modify(MyProfilePage, ProfilePage) 
 {
+    static void onModify(auto& self) {
+        self.setHookPriority("ProfilePage::loadPageFromUserInfo", -1000);
+    }
+    
 	void loadPageFromUserInfo(GJUserScore* p0) 
     {
 		ProfilePage::loadPageFromUserInfo(p0);
@@ -160,12 +164,8 @@ class $modify(MyProfilePage, ProfilePage)
 
 	void onIconClick(CCObject* sender)
     {
-        //shows popup and sets tag for later
+        //shows popup
         CCMenuItemSpriteExtra* button = static_cast<CCMenuItemSpriteExtra*>(sender);
-        
-        if (button->getID() != "player-deathEffect")
-            button->setTag(1);
-        
         IconObject icon = getUnlockData(button->getID(), m_score);
         ItemInfoPopup::create(icon.iconId, icon.unlockType)->show();
 	}

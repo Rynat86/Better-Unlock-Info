@@ -55,7 +55,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         iconSwap(IconId, UnlockType, false);
         
         if (!(Mod::get()->getSettingValue<bool>("useMyColorsToggle")))   
-        adduseMyColorsCheckBox();
+        addUseMyColorsCheckBox();
         
         
         
@@ -95,22 +95,19 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         {
             //finds clicked icon
             auto profile = m_fields->profileList.back();
-            auto userIconButton = profile->getChildByIDRecursive("player-menu")->getChildByTag(1);
-            userIconButton->setTag(-1);
         
             //copies icon from profile
             auto userIcon = SimplePlayer::create(0);
+            userIcon->updatePlayerFrame(iconId, UnlockToIcon(unlockType));
             
+            auto GM = GameManager::get();
+            userIcon->setColor(GM->colorForIdx(profile->m_score->m_color1));
+            userIcon->setSecondColor(GM->colorForIdx(profile->m_score->m_color2));
+            if (profile->m_score->m_glowEnabled) userIcon->setGlowOutline(GM->colorForIdx(profile->m_score->m_color3));
+                
             //conflict animated profiles
-            if (Loader::get()->isModLoaded("thesillydoggo.animatedprofiles") && (unlockType == UnlockType::Robot || unlockType == UnlockType::Spider))
+            if (Loader::get()->isModLoaded("thesillydoggo.animatedprofiles"))
             {
-                userIcon->updatePlayerFrame(iconId, UnlockToIcon(unlockType));
-                
-                auto GM = GameManager::get();
-                userIcon->setColor(GM->colorForIdx(profile->m_score->m_color1));
-                userIcon->setSecondColor(GM->colorForIdx(profile->m_score->m_color2));
-                if (profile->m_score->m_glowEnabled) userIcon->setGlowOutline(GM->colorForIdx(profile->m_score->m_color3));
-                
                 if (unlockType == UnlockType::Robot)
                 {
                     userIcon->createRobotSprite(iconId);
@@ -122,11 +119,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
                     userIcon->m_spiderSprite->runAnimation("idle01");
                 }
             }
-            else
-            {
-                userIcon->removeAllChildren();
-                userIcon->addChild(getChildOfType<CCSprite>(userIconButton->getChildByTag(1), 0));
-            }
+            
             userIcon->setScale(1);
             userIcon->setPosition(CCPoint(15, 15));
 
@@ -258,7 +251,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         ItemInfoPopup::create(parameters->m_IconId, parameters->m_UnlockType)->show();
     }
     
-    void adduseMyColorsCheckBox()
+    void addUseMyColorsCheckBox()
     {
         //adds menu
         auto menu = CCMenu::create();
