@@ -9,7 +9,8 @@
     "id":"rynat.better_unlock_info",
     "name":"Better Unlock Info",
     "developer":"Rynat",
-    "description":"Shows how to unlock icons that someone is using and more info about them",
+    "description":"Shows how to unlock icons that someone is using and more info about them.",
+    "repository": "https://github.com/Rynat86/Better-Unlock-Info",
     "tags": ["enhancement", "interface"],
     "dependencies":
     [
