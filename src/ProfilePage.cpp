@@ -6,18 +6,20 @@
 class $modify(MyProfilePage, ProfilePage) 
 {
     static void onModify(auto& self) {
-        self.setHookPriority("ProfilePage::loadPageFromUserInfo", -1000);
+        (void) self.setHookPriority("ProfilePage::loadPageFromUserInfo", -1000);
     }
     
 	void loadPageFromUserInfo(GJUserScore* p0) 
     {
 		ProfilePage::loadPageFromUserInfo(p0);
         
-        if (m_mainLayer->getChildByID("player-menu") == nullptr) return;
+        auto playerMenu = m_mainLayer->getChildByID("player-menu");
+        
+        if (playerMenu == nullptr) return;
         
         //replaces icons with buttons
         std::list<std::string> ids;
-        for (auto node : CCArrayExt<CCNode*>(m_mainLayer->getChildByID("player-menu")->getChildren()))
+        for (auto node : CCArrayExt<CCNode*>(playerMenu->getChildren()))
             ids.push_back(node->getID());
         for (auto id : ids)
             replacePlayerIconNodeWithButton(id);
@@ -30,7 +32,7 @@ class $modify(MyProfilePage, ProfilePage)
             addDeathEffect();
         
         //update layout
-        m_mainLayer->getChildByID("player-menu")->updateLayout();
+        playerMenu->updateLayout();
         
         //warning for fps drops
         int profileCount = 0;
@@ -62,6 +64,14 @@ class $modify(MyProfilePage, ProfilePage)
             popup->show();
         }
         
+        if (Loader::get()->isModLoaded("thesillydoggo.animatedprofiles")) {
+            if (auto robot = typeinfo_cast<SimplePlayer*>(playerMenu->getChildByID("player-robot")->getChildByID("player-robot"))->m_robotSprite) {
+                robot->runAnimation("idle01");
+            }
+            if (auto spider = typeinfo_cast<SimplePlayer*>(playerMenu->getChildByID("player-spider")->getChildByID("player-spider"))->m_spiderSprite) {
+                spider->runAnimation("idle01");
+            }
+        }
 	}
     
     void addJetpack()
@@ -128,7 +138,6 @@ class $modify(MyProfilePage, ProfilePage)
         swapChildIndices(m_mainLayer->getChildByIDRecursive(nodeId), iconButton);
         m_mainLayer->getChildByID("player-menu")->removeChildByID(nodeId);
         
-        //conflict animated profiles
         iconButton->removeAllChildren();
         iconButton->addChild(iconPlayer);
         
