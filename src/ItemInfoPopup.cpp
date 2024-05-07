@@ -7,7 +7,7 @@
 class $modify(MyItemInfoPopup, ItemInfoPopup) 
 {
     static void onModify(auto& self) {
-        self.setHookPriority("ItemInfoPopup::init", -1000);
+        (void) self.setHookPriority("ItemInfoPopup::init", -1000);
     }
     
     std::vector<ProfilePage*> profileList;
@@ -148,13 +148,21 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         {
             if (unlockType == UnlockType::Robot)
             {
-                myColorIconPlayer->createRobotSprite(iconId);
-                myColorIconPlayer->m_robotSprite->runAnimation("idle01");
+                if (myColorIconPlayer) {
+                    myColorIconPlayer->createRobotSprite(iconId);
+                    if (auto sprite = myColorIconPlayer->m_robotSprite) {
+                        sprite->runAnimation("idle01");
+                    }
+                }
             }
             if (unlockType == UnlockType::Spider)
             {
-                myColorIconPlayer->createSpiderSprite(iconId);
-                myColorIconPlayer->m_spiderSprite->runAnimation("idle01");
+                if (myColorIconPlayer) {
+                    myColorIconPlayer->createSpiderSprite(iconId);
+                    if (auto sprite = myColorIconPlayer->m_spiderSprite) {
+                        sprite->runAnimation("idle01");
+                    }
+                }
             }
         }
         
