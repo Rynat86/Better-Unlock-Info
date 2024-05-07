@@ -148,20 +148,20 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         {
             if (unlockType == UnlockType::Robot)
             {
-                if (myColorIconPlayer) {
+                if (myColorIconPlayer)
+                {
                     myColorIconPlayer->createRobotSprite(iconId);
-                    if (auto sprite = myColorIconPlayer->m_robotSprite) {
+                    if (auto sprite = myColorIconPlayer->m_robotSprite)
                         sprite->runAnimation("idle01");
-                    }
                 }
             }
             if (unlockType == UnlockType::Spider)
             {
-                if (myColorIconPlayer) {
+                if (myColorIconPlayer)
+                {
                     myColorIconPlayer->createSpiderSprite(iconId);
-                    if (auto sprite = myColorIconPlayer->m_spiderSprite) {
+                    if (auto sprite = myColorIconPlayer->m_spiderSprite)
                         sprite->runAnimation("idle01");
-                    }
                 }
             }
         }

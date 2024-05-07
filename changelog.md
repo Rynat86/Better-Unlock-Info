@@ -1,5 +1,4 @@
 # v1.1.1
- - bump Geode requirement to beta 25
  - ensure that animations are being played when the [Animated Profile Icons](https://geode-sdk.org/mods/thesillydoggo.animatedprofiles) mod is installed
 
 # v1.1.0
