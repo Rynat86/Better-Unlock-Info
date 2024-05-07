@@ -5,8 +5,10 @@
 //adds jetpack and death effect to profile and makes icons into buttons that show unlock popup, fps warning popoup if funny
 class $modify(MyProfilePage, ProfilePage) 
 {
-    static void onModify(auto& self) {
-        (void) self.setHookPriority("ProfilePage::loadPageFromUserInfo", -1000);
+    static void onModify(auto& self)
+    {
+        //idk why this is here anymore xd
+        //(void) self.setHookPriority("ProfilePage::loadPageFromUserInfo", -1000);
     }
     
 	void loadPageFromUserInfo(GJUserScore* p0) 
@@ -149,7 +151,6 @@ class $modify(MyProfilePage, ProfilePage)
         iconPlayer->setPosition(CCPoint(21.3f, 21.3f));
         
         iconButton->setID(nodeId);
-        iconPlayer->setTag(1);
     }
 
     IconObject getUnlockData(std::string buttonID, GJUserScore* m_score)

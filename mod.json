@@ -20,13 +20,6 @@
             "importance": "required"
         }
     ],
-    "incompatibilities": [
-        {
-            "id": "thesillydoggo.animatedprofiles",
-            "version": "<1.0.2",
-            "importance": "breaking"
-        }
-    ],
     "settings":
     {
         "jetpackToggle":

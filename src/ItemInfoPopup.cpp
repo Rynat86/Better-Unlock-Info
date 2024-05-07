@@ -6,7 +6,8 @@
 //replaces grayscale icon with users, adds colors and rest aka lazy to write - in about.md
 class $modify(MyItemInfoPopup, ItemInfoPopup) 
 {
-    static void onModify(auto& self) {
+    static void onModify(auto& self)
+    {
         (void) self.setHookPriority("ItemInfoPopup::init", -1000);
     }
     
