@@ -18,16 +18,16 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         if (!ItemInfoPopup::init(IconId, UnlockType)) return false;
         
         addDetailButton(IconId, UnlockType);
+        
         if (UnlockType == UnlockType::ShipFire || UnlockType == UnlockType::GJItem) return true; //note, icon type for isIconUnlocked()
-        {
-            if (!(Mod::get()->getSettingValue<bool>("equipToggle")))
-                addEquipButton(IconId, UnlockType);
-            
-            if (!(Mod::get()->getSettingValue<bool>("progressToggle")))
-                addCompletionProgress(IconId, UnlockType);
-            else
-                addCompletionIconOnly(IconId, UnlockType);
-        }
+        
+        if (!(Mod::get()->getSettingValue<bool>("equipToggle")))
+            addEquipButton(IconId, UnlockType);
+        
+        if (!(Mod::get()->getSettingValue<bool>("progressToggle")))
+            addCompletionProgress(IconId, UnlockType);
+        else
+            addCompletionIconOnly(IconId, UnlockType);
         
         //moves credit
         for (auto button : CCArrayExt<CCMenuItemSpriteExtra*>(getChildOfType<CCMenu>(m_mainLayer, 0)->getChildren()))
@@ -56,7 +56,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         iconSwap(IconId, UnlockType, false);
         
         if (!(Mod::get()->getSettingValue<bool>("useMyColorsToggle")))   
-        addUseMyColorsCheckBox();
+            addUseMyColorsCheckBox();
         
         
         
@@ -369,6 +369,15 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
                             GJGarageLayer* garage = getChildOfType<GJGarageLayer>(CCScene::get(), 0);
                             if (garage != nullptr)
                             {
+                                //esc doesnt call onclose so they just pile up, this clears it
+                                while (true)
+                                {
+                                    auto node = garage->getChildByID("BUInode");
+                                    if (node == nullptr)
+                                        break;
+                                    garage->removeChild(node);
+                                }
+                                
                                 CCNode* dummy = CCNode::create();
                                 dummy->setID("BUInode");
                                 dummy->setUserObject(new BetterUnlockInfo_Params(
@@ -1068,7 +1077,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         
         
         if (!Mod::get()->setSavedValue("shown-equip-restart-popup", true))
-            FLAlertLayer::create("Note", "By equiping icon this way it won't update on your profile until you restart your game", "OK")->show();
+            FLAlertLayer::create("Note", "By equiping icon this way it won't update on your profile until you restart the game", "OK")->show();
         
         if (getChildOfType<geode::Notification>(CCScene::get(), 0) == nullptr)
             geode::Notification::create("Equipped", CCSprite::createWithSpriteFrameName("GJ_completesIcon_001.png"))->show();
