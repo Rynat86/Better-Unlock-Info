@@ -1,4 +1,5 @@
 # v1.1.2
+ - Added Android32 support
  - Fixed crashes when buying colors in garage
  - Fixed incorect sizes when buying icons in garage
 
