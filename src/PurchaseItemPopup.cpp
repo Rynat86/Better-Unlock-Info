@@ -13,11 +13,11 @@ class $modify(PurchaseItemPopup)
         if (getChildOfType<GJShopLayer>(scene, 0) == nullptr)
         {
             FMODAudioEngine::sharedEngine()->playEffect("buyItem01.ogg");
-            
+
             GJGarageLayer* garage = getChildOfType<GJGarageLayer>(scene, 0);
             if (garage != nullptr)
             {
-                auto parameters = static_cast<BetterUnlockInfo_Params*>(garage->getChildByID("BUInode")->getUserObject());
+                auto parameters = static_cast<BetterUnlockInfo_Params*>(getChildOfType<ItemInfoPopup>(CCScene::get(), 0)->getUserObject());
                 
                 //udpate money label
                 CCLabelBMFont* money = static_cast<CCLabelBMFont*>(garage->getChildByID("orbs-label"));
@@ -45,7 +45,6 @@ class $modify(PurchaseItemPopup)
                                 ), 0
                             )->getChildByTag(parameters->m_IconId)
                         );
-                        if (iconButton == nullptr) goto end;
                     break;
                     
                     case UnlockType::GJItem:
@@ -86,6 +85,7 @@ class $modify(PurchaseItemPopup)
                         );
                     break;
                 }
+                if (iconButton == nullptr) goto end;
                 
                 //create unlocked icon
                 float scale;
@@ -113,10 +113,13 @@ class $modify(PurchaseItemPopup)
                     newIcon->setPosition(CCPoint(15, 15));
                     newIcon->setScale(scale);
                     iconButton->addChild(newIcon);
+                    
+                    /* doesnt work idk why
+                    if (parameters->m_UnlockType == UnlockType::GJItem)
+                        getChildOfType<CCSprite>(newIcon, 0)->setColor(ccColor3B(100,100,100));*/
                 }
-
+                
                 end:
-                garage->removeChildByID("BUInode");
                 CCTouchDispatcher::get()->unregisterForcePrio(getChildOfType<ItemInfoPopup>(scene, 0));
                 scene->removeChild(getChildOfType<ItemInfoPopup>(scene, 0));
             }
@@ -126,14 +129,5 @@ class $modify(PurchaseItemPopup)
                 scene->removeChild(static_cast<CCNode*>(scene->getChildren()->objectAtIndex(scene->getChildrenCount()-1))); //remove item popup
             
         }
-    }
-    
-    void onClose(CCObject* sender)
-    {
-        PurchaseItemPopup::onClose(sender);
-        
-        GJGarageLayer* garage = getChildOfType<GJGarageLayer>(CCScene::get(), 0);
-        if (garage != nullptr)
-            garage->removeChildByID("BUInode");
     }
 };

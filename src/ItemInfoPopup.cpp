@@ -364,29 +364,16 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
                                 FLAlertLayer::create("Too expensive!", "You can't afford this item", "OK")->show();
                                 return;
                             }
-                            
-                            //the dummy node
-                            GJGarageLayer* garage = getChildOfType<GJGarageLayer>(CCScene::get(), 0);
-                            if (garage != nullptr)
+
+                            //buy data into popup
+                            if (getChildOfType<GJGarageLayer>(CCScene::get(), 0) != nullptr)
                             {
-                                //esc doesnt call onclose so they just pile up, this clears it
-                                while (true)
-                                {
-                                    auto node = garage->getChildByID("BUInode");
-                                    if (node == nullptr)
-                                        break;
-                                    garage->removeChild(node);
-                                }
-                                
-                                CCNode* dummy = CCNode::create();
-                                dummy->setID("BUInode");
-                                dummy->setUserObject(new BetterUnlockInfo_Params(
+                                this->setUserObject(new BetterUnlockInfo_Params(
                                     item["IconId"].as_int(), 
                                     static_cast<UnlockType>(item["UnlockType"].as_int()), 
                                     item["Price"].as_int(),
                                     item["ShopType"].as_int()
                                 ));
-                                garage->addChild(dummy);
                             }
                             
                             //buy popup
@@ -599,9 +586,10 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         if (textArea == nullptr) return std::string("unlock 2.21");
         
         std::string labelText = "";
-        for (CCLabelBMFont* label : CCArrayExt<CCLabelBMFont*>(textArea->m_label->getChildren()) )
+        auto multiline = getChildOfType<MultilineBitmapFont>(textArea, 0);
+        for (auto label : CCArrayExt<CCLabelBMFont*>(multiline->getChildren()) )
             labelText.append(label->getString());
-            
+        
         return labelText;
     }
 
