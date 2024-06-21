@@ -292,7 +292,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         menu->addChild(infoButton);
         m_mainLayer->addChild(menu);
         
-        if (Mod::get()->getSettingValue<bool>("garageColorsToggle"))
+        if (Mod::get()->getSettingValue<bool>("garageColorsToggle") && getChildOfType<GJGarageLayer>(CCScene::get(), 0) != nullptr)
         {
             check->toggle(true);
             m_mainLayer->getChildByID("useMyColorsToggle")->setVisible(true);
