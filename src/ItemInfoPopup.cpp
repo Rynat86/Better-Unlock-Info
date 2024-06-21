@@ -6,12 +6,17 @@
 //replaces grayscale icon with users, adds colors and rest aka lazy to write - in about.md
 class $modify(MyItemInfoPopup, ItemInfoPopup) 
 {
+    struct Fields
+    {
+        std::vector<ProfilePage*> profileList;
+    };
+    
+    
     static void onModify(auto& self)
     {
         (void) self.setHookPriority("ItemInfoPopup::init", -1000);
     }
     
-    std::vector<ProfilePage*> profileList;
     
     bool init(int IconId, UnlockType UnlockType) 
     {
@@ -107,6 +112,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
             if (profile->m_score->m_glowEnabled) userIcon->setGlowOutline(GM->colorForIdx(profile->m_score->m_color3));
                 
             //conflict animated profiles
+            /*createRobotSprite error
             if (Loader::get()->isModLoaded("thesillydoggo.animatedprofiles"))
             {
                 if (unlockType == UnlockType::Robot)
@@ -120,6 +126,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
                     userIcon->m_spiderSprite->runAnimation("idle01");
                 }
             }
+            */
             
             userIcon->setScale(1);
             userIcon->setPosition(CCPoint(15, 15));
@@ -145,6 +152,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         if (!GM->m_playerGlow) myColorIconPlayer->disableGlowOutline();
         
         //conflict animated profiles
+        /*createRobotSprite error and replace with above version
         if (Loader::get()->isModLoaded("thesillydoggo.animatedprofiles"))
         {
             if (unlockType == UnlockType::Robot)
@@ -166,6 +174,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
                 }
             }
         }
+        */
         
         CCSize screenSize = CCDirector::sharedDirector()->getWinSize();
         myColorIcon->setPosition(CCPoint(screenSize.width / 2, originalIcon->getPositionY()));
@@ -282,6 +291,13 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         menu->addChild(check);
         menu->addChild(infoButton);
         m_mainLayer->addChild(menu);
+        
+        if (Mod::get()->getSettingValue<bool>("garageColorsToggle"))
+        {
+            check->toggle(true);
+            m_mainLayer->getChildByID("useMyColorsToggle")->setVisible(true);
+            m_mainLayer->getChildByTag(1)->setVisible(false);
+        }    
     }
     
     void onUseMyColors(CCObject* sender)
@@ -321,6 +337,8 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         auto parameters = static_cast<BetterUnlockInfo_Params*>(static_cast<CCNode*>(sender)->getUserObject());
         
         //creates a dummy node for info for "refreshing" garage layer
+        //PurchaseItemPopup::create & GJStoreItem::create error
+        /*
         if (labelText.find("buy") != std::string::npos) 
         {
             std::ifstream file(Mod::get()->getResourcesDir() / "shops.json");
@@ -444,7 +462,14 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
             buypopup->addChild(subCount);
             buypopup->addChild(afterCount);
         }
-
+        */
+        //temp
+        if (labelText.find("buy") != std::string::npos)
+        {
+            FLAlertLayer::create(nullptr, "Unavailable", "Buying icons from here isn't yet possible in 2.206", "OK", nullptr, 400)->show();
+        }
+        
+        
         if (labelText.find("secret chest") != std::string::npos)
         {
             std::ifstream file(Mod::get()->getResourcesDir() / "chests.json");
@@ -791,6 +816,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         case -11 : currentValue = GSM->getCollectedCoinsForLevel(static_cast<GJGameLevel*>(GLM->m_mainLevels->objectForKey(std::string("50").append(achiLong.substr(18, 2))))); break;
         case -12 :
         {
+            /*FriendsProfilePage::create error
             FriendsProfilePage* friends = FriendsProfilePage::create(UserListType::Friends);
             for (auto node : CCArrayExt<CCNode*>(friends->m_mainLayer->getChildren()))
                 if (typeinfo_cast<CCLabelBMFont*>(node) != nullptr)
@@ -801,6 +827,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
                     if (num > 0) currentValue = num;
                 }
             friends->release(); //idk if works, everytime you click this it still adds 2mb to memory and doesnt go down really
+            */
             break;
         }
         default: 
@@ -872,6 +899,11 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
                             if (num - 15 < 10) numtext = "0";
                             numtext.append(std::to_string(num-15));
                             sprite = std::string("island_new").append(numtext).append("_001.png");
+                            
+                            //ncs
+                            if(num > 50) 
+                                sprite = std::string("island_ncs0").append(std::to_string(num-50)).append("_001.png");
+                            
                             break;
                         }
                         scale = 0.2f;

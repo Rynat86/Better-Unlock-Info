@@ -1,7 +1,12 @@
+# v1.1.3
+ - Added 2.206 support
+ - Added setting to automatically toggle your colors in garage popup
+ - **Temporary** disabled buying icons from popup
+
 # v1.1.2
  - Added Android32 support
  - Fixed crashes when buying colors in garage
- - Fixed incorect sizes when buying icons in garage
+ - Fixed incorrect sizes when buying icons in garage
 
 # v1.1.1
  - Ensure that animations are being played when the [Animated Profile Icons](https://geode-sdk.org/mods/thesillydoggo.animatedprofiles) mod is installed
