@@ -11,12 +11,12 @@
     "developer":"Rynat",
     "description":"Shows how to unlock icons that someone is using and more info about them.",
     "repository": "https://github.com/Rynat86/Better-Unlock-Info",
-    "tags": ["enhancement", "interface"],
+    "tags": ["enhancement", "interface", "utility"],
     "dependencies":
     [
         {
             "id": "geode.node-ids",
-            "version": ">=v1.11.0",
+            "version": ">=v1.12.0",
             "importance": "required"
         }
     ],
