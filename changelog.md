@@ -1,5 +1,6 @@
 # v1.1.4
  - Fixed overlapping buttons in garage with [GDUtils](https://geode-sdk.org/mods/gdutilsdevs.gdutils) mod
+ - Fixed overlapping equip button on spinoff icons
  - Re-enabled buying icons from popup
 
 # v1.1.3

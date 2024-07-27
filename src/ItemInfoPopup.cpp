@@ -1039,6 +1039,14 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
             screenSize.height / 2 - originalMenu->getPositionY() + 115 - equipButton->getContentSize().height * 0.6 / 2 - 6
         ));
         
+        //for unlocked spinoff games icons
+        for (const char* name : { "gj_subzeroLogo_001.png", "gj_worldLogo_001.png", "GJ_md_001.png" })
+        {
+            auto spinoff = getChildBySpriteFrameName(m_mainLayer, name);
+            if (spinoff != nullptr)
+                equipButton->setPositionY(equipButton->getPositionY() - spinoff->getContentHeight() * 0.4f - 5);
+        }
+        
         equipButton->setUserObject(new BetterUnlockInfo_Params(iconId, unlockType));
         originalMenu->addChild(equipButton);
     }
