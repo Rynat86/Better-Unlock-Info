@@ -1,3 +1,7 @@
+# v1.1.4
+ - Fixed overlapping buttons in garage with [GDUtils](https://geode-sdk.org/mods/gdutilsdevs.gdutils) mod
+ - Re-enabled buying icons from popup
+
 # v1.1.3
  - Added 2.206 support
  - Added setting to automatically toggle your colors in garage popup

@@ -87,6 +87,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         return true;
     }
     
+    //icon replace
     void iconSwap(int iconId, UnlockType unlockType, bool OnProfile)
     {
         //adds tag to original icon
@@ -157,24 +158,16 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         {
             if (unlockType == UnlockType::Robot)
             {
-                if (myColorIconPlayer)
-                {
-                    myColorIconPlayer->createRobotSprite(iconId);
-                    if (auto sprite = myColorIconPlayer->m_robotSprite)
-                        sprite->runAnimation("idle01");
-                }
+                myColorIconPlayer->createRobotSprite(iconId);
+                myColorIconPlayer->m_robotSprite->runAnimation("idle01");
             }
             if (unlockType == UnlockType::Spider)
             {
-                if (myColorIconPlayer)
-                {
-                    myColorIconPlayer->createSpiderSprite(iconId);
-                    if (auto sprite = myColorIconPlayer->m_spiderSprite)
-                        sprite->runAnimation("idle01");
-                }
+                myColorIconPlayer->createSpiderSprite(iconId);
+                myColorIconPlayer->m_spiderSprite->runAnimation("idle01");
             }
-        }
-        */
+        }*/
+        
         
         CCSize screenSize = CCDirector::sharedDirector()->getWinSize();
         myColorIcon->setPosition(CCPoint(screenSize.width / 2, originalIcon->getPositionY()));
@@ -187,6 +180,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         m_mainLayer->addChild(myColorIcon);
     }
     
+    //profile persons colors
     void addColors()
     {
         CCSize screenSize = CCDirector::sharedDirector()->getWinSize();
@@ -265,12 +259,18 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         for (auto button : CCArrayExt<CCMenuItemSpriteExtra*>(m_mainLayer->getChildByID("button-color-menu")->getChildren()) )
             button->setTag(-1);
         auto parameters = static_cast<BetterUnlockInfo_Params*>(static_cast<CCNode*>(sender)->getUserObject());
+        
+        //for equiping cuz glow uses col2
         sender->setTag(1);
         ItemInfoPopup::create(parameters->m_IconId, parameters->m_UnlockType)->show();
     }
     
+    //user colors checkboc
     void addUseMyColorsCheckBox()
     {
+        if (Loader::get()->isModLoaded("gdutilsdevs.gdutils") && getChildOfType<GJGarageLayer>(CCScene::get(), 0) != nullptr)
+            return;
+        
         //adds menu
         auto menu = CCMenu::create();
         menu->setID("checkbox-menu");
@@ -313,6 +313,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         m_mainLayer->getChildByTag(1)->setVisible(show);
     }
     
+    //detail button
     void addDetailButton(int iconId, UnlockType unlockType)
     {
         std::string labelText = textFromArea();
@@ -336,9 +337,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
 
         auto parameters = static_cast<BetterUnlockInfo_Params*>(static_cast<CCNode*>(sender)->getUserObject());
         
-        //creates a dummy node for info for "refreshing" garage layer
-        //PurchaseItemPopup::create & GJStoreItem::create error
-        /*
+
         if (labelText.find("buy") != std::string::npos) 
         {
             std::ifstream file(Mod::get()->getResourcesDir() / "shops.json");
@@ -462,12 +461,13 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
             buypopup->addChild(subCount);
             buypopup->addChild(afterCount);
         }
-        */
+        
         //temp
+        /*
         if (labelText.find("buy") != std::string::npos)
         {
             FLAlertLayer::create(nullptr, "Unavailable", "Buying icons from here isn't yet possible in 2.206", "OK", nullptr, 400)->show();
-        }
+        }*/
         
         
         if (labelText.find("secret chest") != std::string::npos)
@@ -667,6 +667,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         }
     }
 
+    //progress bar
     void addCompletionProgress(int iconId, UnlockType unlockType) 
     {
         if (textFromArea().find("2.21") != std::string::npos) return; //note, 2.21
@@ -1019,28 +1020,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         icon->setPosition(CCPoint(118, 35));
     }
     
-    IconType UnlockToIcon(UnlockType unlockType)
-    {
-        
-        switch (unlockType)
-        {
-        case UnlockType::Cube: return IconType::Cube;
-        case UnlockType::Ship: return IconType::Ship;
-        case UnlockType::Ball: return IconType::Ball;
-        case UnlockType::Bird: return IconType::Ufo;
-        case UnlockType::Dart: return IconType::Wave;
-        case UnlockType::Robot: return IconType::Robot;
-        case UnlockType::Spider: return IconType::Spider;
-        case UnlockType::Swing: return IconType::Swing;
-        case UnlockType::Jetpack: return IconType::Jetpack;
-        case UnlockType::Death: return IconType::DeathEffect;
-        case UnlockType::Streak: return IconType::Special;
-        default:break;
-        }
-        
-        return IconType::Cube;
-    }
-    
+    //equip button
     void addEquipButton(int iconId, UnlockType unlockType)
     {
         if (!trueIsItemUnlocked(iconId, unlockType)) return;
@@ -1103,11 +1083,34 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
             geode::Notification::create("Equipped", CCSprite::createWithSpriteFrameName("GJ_completesIcon_001.png"))->show();
     }
     
+    //mics
     bool trueIsItemUnlocked(int iconId, UnlockType unlockType)
     {
         if (unlockType == UnlockType::Col1 || unlockType == UnlockType::Col2)
             return GameManager::get()->isColorUnlocked(iconId, unlockType);
       
         return GameManager::get()->isIconUnlocked(iconId, UnlockToIcon(unlockType));
+    }
+    
+    IconType UnlockToIcon(UnlockType unlockType)
+    {
+        
+        switch (unlockType)
+        {
+        case UnlockType::Cube: return IconType::Cube;
+        case UnlockType::Ship: return IconType::Ship;
+        case UnlockType::Ball: return IconType::Ball;
+        case UnlockType::Bird: return IconType::Ufo;
+        case UnlockType::Dart: return IconType::Wave;
+        case UnlockType::Robot: return IconType::Robot;
+        case UnlockType::Spider: return IconType::Spider;
+        case UnlockType::Swing: return IconType::Swing;
+        case UnlockType::Jetpack: return IconType::Jetpack;
+        case UnlockType::Death: return IconType::DeathEffect;
+        case UnlockType::Streak: return IconType::Special;
+        default:break;
+        }
+        
+        return IconType::Cube;
     }
 };
