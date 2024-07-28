@@ -22,9 +22,9 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
     {
         if (!ItemInfoPopup::init(IconId, UnlockType)) return false;
         
-        addDetailButton(IconId, UnlockType);
-        
+        //gj is broken when toggle no idea why
         if (UnlockType == UnlockType::ShipFire || UnlockType == UnlockType::GJItem) return true; //note, icon type for isIconUnlocked()
+        addDetailButton(IconId, UnlockType);
         
         if (!(Mod::get()->getSettingValue<bool>("equipToggle")))
             addEquipButton(IconId, UnlockType);

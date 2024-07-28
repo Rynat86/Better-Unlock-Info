@@ -25,7 +25,7 @@ class $modify(PurchaseItemPopup)
                     money = static_cast<CCLabelBMFont*>(garage->getChildByID("diamond-shards-label"));
                 money->setString(std::to_string(std::atoi(money->getString()) - parameters->m_Price).c_str());
                 
-                //update icon
+                //get button
                 CCMenuItemSpriteExtra* iconButton;
                 switch (parameters->m_UnlockType) 
                 {
@@ -87,7 +87,7 @@ class $modify(PurchaseItemPopup)
                 }
                 if (iconButton == nullptr) goto end;
                 
-                //create unlocked icon
+                //set scale
                 float scale;
                 switch (parameters->m_UnlockType) {
                     case UnlockType::Ship: scale = 0.6f; break;
@@ -100,6 +100,7 @@ class $modify(PurchaseItemPopup)
                     default: scale = 0.8f; break;
                 }
                 
+                //update icon
                 if (parameters->m_UnlockType == UnlockType::Col1 || parameters->m_UnlockType == UnlockType::Col2)
                 {
                     getChildOfType<CCSprite>(getChildOfType<ColorChannelSprite>(iconButton, 0), 0)->setVisible(false);
@@ -114,14 +115,15 @@ class $modify(PurchaseItemPopup)
                     newIcon->setScale(scale);
                     iconButton->addChild(newIcon);
                     
-                    /* doesnt work idk why
-                    if (parameters->m_UnlockType == UnlockType::GJItem)
-                        getChildOfType<CCSprite>(newIcon, 0)->setColor(ccColor3B(100,100,100));*/
                 }
                 
                 end:
                 CCTouchDispatcher::get()->unregisterForcePrio(getChildOfType<ItemInfoPopup>(scene, 0));
                 scene->removeChild(getChildOfType<ItemInfoPopup>(scene, 0));
+                
+                /*  tf why
+                if(parameters->m_UnlockType == UnlockType::GJItem)
+                    garage->onToggleItem(iconButton);*/
             }
             
             ProfilePage* profile = getChildOfType<ProfilePage>(scene, 0);
