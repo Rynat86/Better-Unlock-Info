@@ -121,7 +121,7 @@ class $modify(PurchaseItemPopup)
                 CCTouchDispatcher::get()->unregisterForcePrio(getChildOfType<ItemInfoPopup>(scene, 0));
                 scene->removeChild(getChildOfType<ItemInfoPopup>(scene, 0));
                 
-                /*  tf why
+                /*  tf why error
                 if(parameters->m_UnlockType == UnlockType::GJItem)
                     garage->onToggleItem(iconButton);*/
             }

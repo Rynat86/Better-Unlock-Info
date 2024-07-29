@@ -22,46 +22,38 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
     {
         if (!ItemInfoPopup::init(IconId, UnlockType)) return false;
         
-        //gj is broken when toggle no idea why
+        //gj is broken when toggle no idea why, error
         if (UnlockType == UnlockType::ShipFire || UnlockType == UnlockType::GJItem) return true; //note, icon type for isIconUnlocked()
-        addDetailButton(IconId, UnlockType);
         
-        if (!(Mod::get()->getSettingValue<bool>("equipToggle")))
-            addEquipButton(IconId, UnlockType);
+        moveCredit();
+        addDetailButton(IconId, UnlockType);
         
         if (!(Mod::get()->getSettingValue<bool>("progressToggle")))
             addCompletionProgress(IconId, UnlockType);
         else
             addCompletionIconOnly(IconId, UnlockType);
         
-        //moves credit
-        for (auto button : CCArrayExt<CCMenuItemSpriteExtra*>(getChildOfType<CCMenu>(m_mainLayer, 0)->getChildren()))
-            if (typeinfo_cast<CCLabelBMFont*>(button->getChildByTag(1)) != nullptr)
-            {
-                if (button->getID()[0] == 'c')
-                {
-                    button->removeFromParent(); //sorry cvolton
-                    continue;
-                }
-                button->setPosition(CCPoint(0, 173));
-                button->m_baseScale = 0.8f;
-                button->setScale(0.8f);
-                
-                auto originalIcon = getChildOfType<GJItemIcon>(m_mainLayer, 0);
-                originalIcon->setTag(1);
-                originalIcon->setPositionY(originalIcon->getPositionY() - 6);
-            }
-
+        
         
         //if this is unlock, dont add colors related stuff
         int badUnlocks[] = {2, 3, 10, 11, 12, 15};
-        bool exists = std::find(std::begin(badUnlocks), std::end(badUnlocks), static_cast<int>(UnlockType)) != std::end(badUnlocks);
-        if (exists) return true;
+        bool isBad = std::find(std::begin(badUnlocks), std::end(badUnlocks), static_cast<int>(UnlockType)) != std::end(badUnlocks);
+        if (isBad)
+        {
+            //is bad but add equip on profile
+            if (CCScene::get()->getChildByID("ProfilePage") != nullptr)
+                if (!(Mod::get()->getSettingValue<bool>("equipToggle")))
+                    addEquipButton(IconId, UnlockType);
+            return true;
+        }
         
-        iconSwap(IconId, UnlockType, false);
         
-        if (!(Mod::get()->getSettingValue<bool>("useMyColorsToggle")))   
+        
+        if (!(Mod::get()->getSettingValue<bool>("useMyColorsToggle")))
+        {
+            addColorIcon(IconId, UnlockType, false);
             addUseMyColorsCheckBox();
+        }
         
         
         
@@ -74,8 +66,11 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
             if (typeinfo_cast<ProfilePage*>(node) != nullptr)
                 m_fields->profileList.push_back(static_cast<ProfilePage*>(node));
 
-        iconSwap(IconId, UnlockType, true);
+        addColorIcon(IconId, UnlockType, true);
         addColors();
+        
+        if (!(Mod::get()->getSettingValue<bool>("equipToggle")))
+            addEquipButton(IconId, UnlockType);
         
         //fix android touch - thx devtools :yep:
         if (auto delegate = typeinfo_cast<CCTouchDelegate*>(m_fields->profileList.back()))
@@ -88,7 +83,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
     }
     
     //icon replace
-    void iconSwap(int iconId, UnlockType unlockType, bool OnProfile)
+    void addColorIcon(int iconId, UnlockType unlockType, bool OnProfile)
     {
         //adds tag to original icon
         auto originalIcon = m_mainLayer->getChildByTag(1);
@@ -180,6 +175,54 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         m_mainLayer->addChild(myColorIcon);
     }
     
+    //user colors checkboc
+    void addUseMyColorsCheckBox()
+    {
+        if (Loader::get()->isModLoaded("gdutilsdevs.gdutils") && getChildOfType<GJGarageLayer>(CCScene::get(), 0) != nullptr)
+            return;
+        
+        //adds menu
+        auto menu = CCMenu::create();
+        menu->setID("checkbox-menu");
+        menu->setScale(0.35f);
+        handleTouchPriority(this);
+        
+        auto check = CCMenuItemToggler::createWithStandardSprites(this, menu_selector(MyItemInfoPopup::onUseMyColorsToggle), 1);
+    
+        CCSize screenSize = CCDirector::sharedDirector()->getWinSize();
+        menu->setPosition(CCPoint(150 + screenSize.width / 2 * 0.35f - 20, 115 + screenSize.height / 2 * 0.35f - (check->getContentSize().height * 0.35) -  6));
+        
+        //info popup
+        auto infoButton = CCMenuItemSpriteExtra::create(CCSprite::createWithSpriteFrameName("GJ_infoIcon_001.png"), this, menu_selector(MyItemInfoPopup::onUseMyColors));
+        infoButton->m_baseScale = 0.7f;
+        infoButton->setScale(0.7f);
+        infoButton->setPosition(CCPoint(28, 16));
+        
+        menu->addChild(check);
+        menu->addChild(infoButton);
+        m_mainLayer->addChild(menu);
+        
+        if (Mod::get()->getSettingValue<bool>("garageColorsToggle") && getChildOfType<GJGarageLayer>(CCScene::get(), 0) != nullptr)
+        {
+            check->toggle(true);
+            m_mainLayer->getChildByID("useMyColorsToggle")->setVisible(true);
+            m_mainLayer->getChildByTag(1)->setVisible(false);
+        }    
+    }
+    
+    void onUseMyColors(CCObject* sender)
+    {
+        FLAlertLayer::create("Use my colors", "Shows the icon in colors you are using", "OK")->show();
+    }
+
+    void onUseMyColorsToggle(CCObject* sender)
+    {
+        //switches between icons
+        bool show = static_cast<CCMenuItemToggler*>(sender)->isOn();
+        m_mainLayer->getChildByID("useMyColorsToggle")->setVisible(!show);
+        m_mainLayer->getChildByTag(1)->setVisible(show);
+    }
+    
     //profile persons colors
     void addColors()
     {
@@ -263,54 +306,6 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         //for equiping cuz glow uses col2
         sender->setTag(1);
         ItemInfoPopup::create(parameters->m_IconId, parameters->m_UnlockType)->show();
-    }
-    
-    //user colors checkboc
-    void addUseMyColorsCheckBox()
-    {
-        if (Loader::get()->isModLoaded("gdutilsdevs.gdutils") && getChildOfType<GJGarageLayer>(CCScene::get(), 0) != nullptr)
-            return;
-        
-        //adds menu
-        auto menu = CCMenu::create();
-        menu->setID("checkbox-menu");
-        menu->setScale(0.35f);
-        handleTouchPriority(this);
-        
-        auto check = CCMenuItemToggler::createWithStandardSprites(this, menu_selector(MyItemInfoPopup::onUseMyColorsToggle), 1);
-    
-        CCSize screenSize = CCDirector::sharedDirector()->getWinSize();
-        menu->setPosition(CCPoint(150 + screenSize.width / 2 * 0.35f - 20, 115 + screenSize.height / 2 * 0.35f - (check->getContentSize().height * 0.35) -  6));
-        
-        //info popup
-        auto infoButton = CCMenuItemSpriteExtra::create(CCSprite::createWithSpriteFrameName("GJ_infoIcon_001.png"), this, menu_selector(MyItemInfoPopup::onUseMyColors));
-        infoButton->m_baseScale = 0.7f;
-        infoButton->setScale(0.7f);
-        infoButton->setPosition(CCPoint(28, 16));
-        
-        menu->addChild(check);
-        menu->addChild(infoButton);
-        m_mainLayer->addChild(menu);
-        
-        if (Mod::get()->getSettingValue<bool>("garageColorsToggle") && getChildOfType<GJGarageLayer>(CCScene::get(), 0) != nullptr)
-        {
-            check->toggle(true);
-            m_mainLayer->getChildByID("useMyColorsToggle")->setVisible(true);
-            m_mainLayer->getChildByTag(1)->setVisible(false);
-        }    
-    }
-    
-    void onUseMyColors(CCObject* sender)
-    {
-        FLAlertLayer::create("Use my colors", "Shows the icon in colors you are using", "OK")->show();
-    }
-
-    void onUseMyColorsToggle(CCObject* sender)
-    {
-        //switches between icons
-        bool show = static_cast<CCMenuItemToggler*>(sender)->isOn();
-        m_mainLayer->getChildByID("useMyColorsToggle")->setVisible(!show);
-        m_mainLayer->getChildByTag(1)->setVisible(show);
     }
     
     //detail button
@@ -1056,6 +1051,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         auto parameters = static_cast<BetterUnlockInfo_Params*>(static_cast<CCNode*>(sender)->getUserObject());     
         auto GM = GameManager::sharedState();      
         
+        //note save it idk
         switch (static_cast<int>(parameters->m_UnlockType))
         {
         case 1: GM->setPlayerFrame(parameters->m_IconId); break;
@@ -1120,5 +1116,25 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         }
         
         return IconType::Cube;
+    }
+    
+    void moveCredit()
+    {
+        for (auto button : CCArrayExt<CCMenuItemSpriteExtra*>(getChildOfType<CCMenu>(m_mainLayer, 0)->getChildren()))
+            if (typeinfo_cast<CCLabelBMFont*>(button->getChildByTag(1)) != nullptr)
+            {
+                if (button->getID()[0] == 'c')
+                {
+                    button->removeFromParent(); //sorry cvolton
+                    continue;
+                }
+                button->setPosition(CCPoint(0, 173));
+                button->m_baseScale = 0.8f;
+                button->setScale(0.8f);
+                
+                auto originalIcon = getChildOfType<GJItemIcon>(m_mainLayer, 0);
+                originalIcon->setTag(1);
+                originalIcon->setPositionY(originalIcon->getPositionY() - 6);
+            }
     }
 };
