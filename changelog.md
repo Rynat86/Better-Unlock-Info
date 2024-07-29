@@ -1,3 +1,7 @@
+# v1.1.5
+ - Fixed crashes when equiping icon through "Use" button
+ - Removed "Use" button from garage
+
 # v1.1.4
  - Fixed overlapping buttons in garage with [GDUtils](https://geode-sdk.org/mods/gdutilsdevs.gdutils) mod
  - Fixed overlapping equip button on spinoff icons
