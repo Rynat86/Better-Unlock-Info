@@ -113,7 +113,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
     
     void updateIconColorsOnProfile()
     {
-        auto checkbox = getChildOfType<CCMenuItemToggler>(getChildByIDRecursive("UseMyColorsCheckBox-menu"), 0);
+        auto checkbox = getChildOfType<CCMenuItemToggler>(getChildByIDRecursive("checkbox-menu"), 0);
         checkbox->setUserObject(CCNode::create());
         checkbox->toggle(true);
         checkbox->toggleWithCallback(false);
