@@ -23,7 +23,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         if (!ItemInfoPopup::init(IconId, UnlockType)) return false;
         
         //gj is broken when toggle no idea why, error
-        if (UnlockType == UnlockType::ShipFire || UnlockType == UnlockType::GJItem) return true; //note, icon type for isIconUnlocked()
+        if (UnlockType == UnlockType::GJItem) return true; //note, icon type for isIconUnlocked()
         
         moveCredit();
         addDetailButton(IconId, UnlockType);
@@ -49,11 +49,9 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         
         
         
+        //add color swap
         if (!(Mod::get()->getSettingValue<bool>("useMyColorsToggle")))
-        {
-            addColorIcon(IconId, UnlockType, false);
             addUseMyColorsCheckBox();
-        }
         
         
         
@@ -66,7 +64,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
             if (typeinfo_cast<ProfilePage*>(node) != nullptr)
                 m_fields->profileList.push_back(static_cast<ProfilePage*>(node));
 
-        addColorIcon(IconId, UnlockType, true);
+        updateIconColorsOnProfile();
         addColors();
         
         if (!(Mod::get()->getSettingValue<bool>("equipToggle")))
@@ -82,100 +80,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         return true;
     }
     
-    //icon replace
-    void addColorIcon(int iconId, UnlockType unlockType, bool OnProfile)
-    {
-        //adds tag to original icon
-        auto originalIcon = m_mainLayer->getChildByTag(1);
-        if (originalIcon == nullptr)
-        {
-            originalIcon = getChildOfType<GJItemIcon>(m_mainLayer, 0);
-            originalIcon->setTag(1);
-        }
-        
-        if (OnProfile)
-        {
-            //finds clicked icon
-            auto profile = m_fields->profileList.back();
-        
-            //copies icon from profile
-            auto userIcon = SimplePlayer::create(0);
-            userIcon->updatePlayerFrame(iconId, UnlockToIcon(unlockType));
-            
-            auto GM = GameManager::get();
-            userIcon->setColor(GM->colorForIdx(profile->m_score->m_color1));
-            userIcon->setSecondColor(GM->colorForIdx(profile->m_score->m_color2));
-            if (profile->m_score->m_glowEnabled) userIcon->setGlowOutline(GM->colorForIdx(profile->m_score->m_color3));
-                
-            //conflict animated profiles
-            /*createRobotSprite error
-            if (Loader::get()->isModLoaded("thesillydoggo.animatedprofiles"))
-            {
-                if (unlockType == UnlockType::Robot)
-                {
-                    userIcon->createRobotSprite(iconId);
-                    userIcon->m_robotSprite->runAnimation("idle01");
-                }
-                if (unlockType == UnlockType::Spider)
-                {
-                    userIcon->createSpiderSprite(iconId);
-                    userIcon->m_spiderSprite->runAnimation("idle01");
-                }
-            }
-            */
-            
-            userIcon->setScale(1);
-            userIcon->setPosition(CCPoint(15, 15));
-
-            //replaces black and white version
-            originalIcon->removeAllChildren();
-            originalIcon->addChild(userIcon);
-			return;
-        }
-
-        
-        //adds useMyColorsToggle icon
-        auto myColorIcon = GJItemIcon::createBrowserItem(unlockType, iconId);
-        myColorIcon->setID("useMyColorsToggle");
-        myColorIcon->setTag(2);
-        myColorIcon->setVisible(false);
-        
-        auto GM = GameManager::get();
-        auto myColorIconPlayer = getChildOfType<SimplePlayer>(myColorIcon, 0);
-        myColorIconPlayer->setColor(GM->colorForIdx(GM->getPlayerColor()));
-        myColorIconPlayer->setSecondColor(GM->colorForIdx(GM->getPlayerColor2()));
-        myColorIconPlayer->setGlowOutline(GM->colorForIdx(GM->getPlayerGlowColor()));
-        if (!GM->m_playerGlow) myColorIconPlayer->disableGlowOutline();
-        
-        //conflict animated profiles
-        /*createRobotSprite error and replace with above version
-        if (Loader::get()->isModLoaded("thesillydoggo.animatedprofiles"))
-        {
-            if (unlockType == UnlockType::Robot)
-            {
-                myColorIconPlayer->createRobotSprite(iconId);
-                myColorIconPlayer->m_robotSprite->runAnimation("idle01");
-            }
-            if (unlockType == UnlockType::Spider)
-            {
-                myColorIconPlayer->createSpiderSprite(iconId);
-                myColorIconPlayer->m_spiderSprite->runAnimation("idle01");
-            }
-        }*/
-        
-        
-        CCSize screenSize = CCDirector::sharedDirector()->getWinSize();
-        myColorIcon->setPosition(CCPoint(screenSize.width / 2, originalIcon->getPositionY()));
-        myColorIcon->setScale(1.25f);
-        myColorIcon->setZOrder(13);
-            
-        originalIcon->setScale(1.1f);
-        myColorIcon->setScale(1.1f);
-            
-        m_mainLayer->addChild(myColorIcon);
-    }
-    
-    //user colors checkboc
+    //user colors checkbox
     void addUseMyColorsCheckBox()
     {
         if (Loader::get()->isModLoaded("gdutilsdevs.gdutils") && getChildOfType<GJGarageLayer>(CCScene::get(), 0) != nullptr)
@@ -203,11 +108,15 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         m_mainLayer->addChild(menu);
         
         if (Mod::get()->getSettingValue<bool>("garageColorsToggle") && getChildOfType<GJGarageLayer>(CCScene::get(), 0) != nullptr)
-        {
-            check->toggle(true);
-            m_mainLayer->getChildByID("useMyColorsToggle")->setVisible(true);
-            m_mainLayer->getChildByTag(1)->setVisible(false);
-        }    
+            check->toggleWithCallback(true);   
+    }
+    
+    void updateIconColorsOnProfile()
+    {
+        auto checkbox = getChildOfType<CCMenuItemToggler>(getChildByIDRecursive("UseMyColorsCheckBox-menu"), 0);
+        checkbox->setUserObject(CCNode::create());
+        checkbox->toggle(true);
+        checkbox->toggleWithCallback(false);
     }
     
     void onUseMyColors(CCObject* sender)
@@ -218,9 +127,44 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
     void onUseMyColorsToggle(CCObject* sender)
     {
         //switches between icons
-        bool show = static_cast<CCMenuItemToggler*>(sender)->isOn();
-        m_mainLayer->getChildByID("useMyColorsToggle")->setVisible(!show);
-        m_mainLayer->getChildByTag(1)->setVisible(show);
+        auto GM = GameManager::get();
+        auto checkbox = static_cast<CCMenuItemToggler*>(sender);
+        
+        SimplePlayer* icon = nullptr;
+        
+        //animated profiles fix
+        if (Loader::get()->isModLoaded("thesillydoggo.animatedprofiles"))
+            for (auto node : CCArrayExt<CCNode*>(m_mainLayer->getChildren()))
+                if (auto menu = typeinfo_cast<CCMenu*>(node))
+                    if (menu->getID() == "")
+                        for (auto menuNode : CCArrayExt<CCNode*>(menu->getChildren()))
+                            if (auto button = typeinfo_cast<CCMenuItemSpriteExtra*>(menuNode))
+                                if (auto gjicon = getChildOfType<GJItemIcon>(button, 0))
+                                    icon = getChildOfType<SimplePlayer>(gjicon, 0);
+        
+        if (icon == nullptr)
+            icon = getChildOfType<SimplePlayer>(getChildOfType<GJItemIcon>(m_mainLayer, 0), 0);
+        
+        icon->setColor(ccColor3B(175,175,175));
+        icon->setSecondColor(ccColor3B(255,255,255));
+        icon->disableGlowOutline();
+
+        //profile check
+        if (checkbox->getUserObject() != nullptr)
+        {
+            auto profile = m_fields->profileList.back();
+            
+            icon->setColor(GM->colorForIdx(profile->m_score->m_color1));
+            icon->setSecondColor(GM->colorForIdx(profile->m_score->m_color2));
+            if (profile->m_score->m_glowEnabled) icon->setGlowOutline(GM->colorForIdx(profile->m_score->m_color3));
+        }
+        
+        if (!checkbox->isOn())
+        {
+            icon->setColor(GM->colorForIdx(GM->getPlayerColor()));
+            icon->setSecondColor(GM->colorForIdx(GM->getPlayerColor2()));
+            icon->setGlowOutline(GM->colorForIdx(GM->getPlayerGlowColor()));    
+        }
     }
     
     //profile persons colors
@@ -1112,6 +1056,8 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         case UnlockType::Jetpack: return IconType::Jetpack;
         case UnlockType::Death: return IconType::DeathEffect;
         case UnlockType::Streak: return IconType::Special;
+        case UnlockType::ShipFire: return IconType::ShipFire;
+        case UnlockType::GJItem: return IconType::Item;
         default:break;
         }
         
@@ -1132,9 +1078,10 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
                 button->m_baseScale = 0.8f;
                 button->setScale(0.8f);
                 
-                auto originalIcon = getChildOfType<GJItemIcon>(m_mainLayer, 0);
-                originalIcon->setTag(1);
-                originalIcon->setPositionY(originalIcon->getPositionY() - 6);
+                //update icon
+                auto icon = getChildOfType<GJItemIcon>(m_mainLayer, 0);
+                icon->setScale(1.1f);
+                icon->setPositionY(icon->getPositionY() - 6);
             }
     }
 };

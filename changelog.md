@@ -1,6 +1,11 @@
+# v1.1.6
+ - Added option to buy Ship Fire from popup in garage
+ - Fixed green glow on some users profiles
+ - Fixed compatibility issues with [Animated Profile Icons](https://geode-sdk.org/mods/thesillydoggo.animatedprofiles)
+
 # v1.1.5
- - Fixed crashes when equiping icon through "Use" button
- - Removed "Use" button from garage
+ - Fixed crashes when equipping icon through "Use" button
+ - Removed "Use" button from popup in garage
 
 # v1.1.4
  - Fixed overlapping buttons in garage with [GDUtils](https://geode-sdk.org/mods/gdutilsdevs.gdutils) mod

@@ -18,6 +18,9 @@ class $modify(MyProfilePage, ProfilePage)
         auto playerMenu = m_mainLayer->getChildByID("player-menu");
         if (playerMenu == nullptr) return;
         
+        //check if broken glow
+        fixGlow(playerMenu);
+        
         //replaces icons with buttons
         std::vector<std::string> ids;
         for (auto node : CCArrayExt<CCNode*>(playerMenu->getChildren()))
@@ -179,4 +182,11 @@ class $modify(MyProfilePage, ProfilePage)
         IconObject icon = getUnlockData(button->getID(), m_score);
         ItemInfoPopup::create(icon.iconId, icon.unlockType)->show();
 	}
+    
+    void fixGlow(CCNode* playerMenu)
+    {
+        auto simpleIcon = typeinfo_cast<SimplePlayer*>(playerMenu->getChildByID("player-icon")->getChildByID("player-icon"));
+        if (!simpleIcon->m_hasCustomGlowColor)
+            m_score->m_color3 = m_score->m_color2;
+    }
 };
