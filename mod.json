@@ -1,11 +1,11 @@
 {
-    "geode":"3.4.0",
+    "geode":"3.8.1",
     "gd":
     {
         "win": "2.206",
         "android": "2.206"
     },
-    "version":"v1.1.6",
+    "version":"v1.1.7",
     "id":"rynat.better_unlock_info",
     "name":"Better Unlock Info",
     "developer":"Rynat",

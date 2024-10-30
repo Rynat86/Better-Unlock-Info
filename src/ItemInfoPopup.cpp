@@ -4,7 +4,7 @@
 
 
 //replaces grayscale icon with users, adds colors and rest aka lazy to write - in about.md
-class $modify(MyItemInfoPopup, ItemInfoPopup) 
+class $modify(MyItemInfoPopup, ItemInfoPopup)
 {
     struct Fields
     {
@@ -113,10 +113,22 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
     
     void updateIconColorsOnProfile()
     {
-        auto checkbox = getChildOfType<CCMenuItemToggler>(getChildByIDRecursive("checkbox-menu"), 0);
-        checkbox->setUserObject(CCNode::create());
-        checkbox->toggle(true);
-        checkbox->toggleWithCallback(false);
+        if (getChildByIDRecursive("checkbox-menu") != nullptr)
+        {
+            auto checkbox = getChildOfType<CCMenuItemToggler>(getChildByIDRecursive("checkbox-menu"), 0);
+            checkbox->setUserObject(CCNode::create());
+            checkbox->toggle(true);
+            checkbox->toggleWithCallback(false);
+            return;
+        }
+        
+        auto GM = GameManager::get();
+        auto icon = getChildOfType<SimplePlayer>(getChildOfType<GJItemIcon>(m_mainLayer, 0), 0);
+        auto profile = m_fields->profileList.back();
+        
+        icon->setColor(GM->colorForIdx(profile->m_score->m_color1));
+        icon->setSecondColor(GM->colorForIdx(profile->m_score->m_color2));
+        if (profile->m_score->m_glowEnabled) icon->setGlowOutline(GM->colorForIdx(profile->m_score->m_color3));
     }
     
     void onUseMyColors(CCObject* sender)

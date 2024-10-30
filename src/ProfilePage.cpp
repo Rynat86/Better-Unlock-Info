@@ -67,15 +67,6 @@ class $modify(MyProfilePage, ProfilePage)
             popup->m_scene = this;
             popup->show();
         }
-        
-        //run anims when anim profiles
-        if (Loader::get()->isModLoaded("thesillydoggo.animatedprofiles"))
-        {
-            if (auto robot = typeinfo_cast<SimplePlayer*>(playerMenu->getChildByID("player-robot")->getChildByID("player-robot"))->m_robotSprite)
-                robot->runAnimation("idle01");
-            if (auto spider = typeinfo_cast<SimplePlayer*>(playerMenu->getChildByID("player-spider")->getChildByID("player-spider"))->m_spiderSprite)
-                spider->runAnimation("idle01");
-        }
 	}
     
     void addJetpack()
