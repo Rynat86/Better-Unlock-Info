@@ -1,3 +1,6 @@
+# v1.1.7
+ - Fixed a crash when "Hide Toggle Your Colors" was enabled
+
 # v1.1.6
  - Added option to buy Ship Fire from popup in garage
  - Fixed green glow on some users profiles
