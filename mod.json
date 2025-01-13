@@ -1,22 +1,24 @@
 {
-    "geode":"3.8.1",
+    "geode":"4.1.2",
     "gd":
     {
-        "win": "2.206",
-        "android": "2.206"
+        "win": "2.2074",
+        "android": "2.2074"
     },
-    "version":"v1.1.7",
+    "version":"v1.2.0",
     "id":"rynat.better_unlock_info",
     "name":"Better Unlock Info",
     "developer":"Rynat",
-    "description":"Shows how to unlock icons that someone is using and more info about them.",
-    "repository": "https://github.com/Rynat86/Better-Unlock-Info",
+    "description":"Shows how to unlock icons on profile and more",
+    "links": {
+        "source": "https://github.com/Rynat86/Better-Unlock-Info"
+    },
     "tags": ["enhancement", "interface", "utility"],
     "dependencies":
     [
         {
             "id": "geode.node-ids",
-            "version": ">=v1.13.1",
+            "version": ">=v1.18.0",
             "importance": "required"
         }
     ],
@@ -68,6 +70,7 @@
     "resources":
     {
         "files":["resources/jsons/*.json"],
+        "sprites":["resources/sprites/_sliderBar.png"],
         "spritesheets": 
         {
             "Mics":["resources/spritesheets/misc/*.png"]

@@ -26,14 +26,14 @@ class $modify(MyProfilePage, ProfilePage)
         for (auto node : CCArrayExt<CCNode*>(playerMenu->getChildren()))
             ids.push_back(node->getID());
         for (auto id : ids)
-            replacePlayerIconNodeWithButton(id);
+            replacePlayerIconNodeWithButton(id, playerMenu);
         
         //adds jetpack and death
         if (Mod::get()->getSettingValue<bool>("jetpackToggle"))
-            addJetpack();
+            addJetpack(playerMenu);
         
         if (Mod::get()->getSettingValue<bool>("deathEffectToggle"))
-            addDeathEffect();
+            addDeathEffect(playerMenu);
         
         //update layout
         playerMenu->updateLayout();
@@ -69,7 +69,7 @@ class $modify(MyProfilePage, ProfilePage)
         }
 	}
     
-    void addJetpack()
+    void addJetpack(CCNode* playerMenu)
     {
         //set up icon
         SimplePlayer* jetpackPlayer = SimplePlayer::create(0);
@@ -91,10 +91,10 @@ class $modify(MyProfilePage, ProfilePage)
 		jetpackButton->getChildByID("player-jetpack")->setPosition(CCPoint(17.3f, 21.3f));
 		
         //add to row
-        m_mainLayer->getChildByID("player-menu")->addChild(jetpackButton);
+        playerMenu->addChild(jetpackButton);
     }
     
-    void addDeathEffect()
+    void addDeathEffect(CCNode* playerMenu)
     {
         //invalid check
         if(m_score->m_playerExplosion <= 0 || m_score->m_playerExplosion > 20) return;
@@ -103,7 +103,7 @@ class $modify(MyProfilePage, ProfilePage)
         SimplePlayer* deathEffectPlayer = SimplePlayer::create(0);
         deathEffectPlayer->removeAllChildren();
         
-        auto deathEffectSprite = getChildOfType<CCSprite>(GJItemIcon::createBrowserItem(UnlockType::Death, m_score->m_playerExplosion), 0);
+        auto deathEffectSprite = GJItemIcon::createBrowserItem(UnlockType::Death, m_score->m_playerExplosion)->getChildByType<CCSprite>(0);
         deathEffectSprite->setPosition(CCPoint(0, 0));
         deathEffectSprite->setScale(1.1);
         
@@ -119,19 +119,19 @@ class $modify(MyProfilePage, ProfilePage)
         deathEffectButton->getChildByID("player-deathEffect")->setPosition(CCPoint(18.3f, 21.3f));
         
         //add to row
-        m_mainLayer->getChildByID("player-menu")->addChild(deathEffectButton);
+        playerMenu->addChild(deathEffectButton);
     }
     
-    void replacePlayerIconNodeWithButton(const std::string &nodeId)
-    {    
+    void replacePlayerIconNodeWithButton(std::string nodeId, CCNode* playerMenu)
+    {
         //creates button from icon        
-        auto iconPlayer = getChildOfType<SimplePlayer>(m_mainLayer->getChildByIDRecursive(nodeId), 0);
+        auto iconPlayer = playerMenu->getChildByID(nodeId)->getChildByType<SimplePlayer>(0);
         auto iconButton = CCMenuItemSpriteExtra::create(CCSprite::create(), this, menu_selector(MyProfilePage::onIconClick));
         
         //swaps with original so its on correct place
-        m_mainLayer->getChildByID("player-menu")->addChild(iconButton);
-        swapChildIndices(m_mainLayer->getChildByIDRecursive(nodeId), iconButton);
-        m_mainLayer->getChildByID("player-menu")->removeChildByID(nodeId);
+        playerMenu->addChild(iconButton);
+        swapChildIndices(playerMenu->getChildByID(nodeId), iconButton);
+        playerMenu->removeChildByID(nodeId);
         
         //conflict animated profiles
         iconButton->removeAllChildren();
@@ -139,7 +139,8 @@ class $modify(MyProfilePage, ProfilePage)
         
         //size
         iconButton->setContentSize(CCSize(42.6f, 42.6f));
-        if (nodeId == "player-wave") iconButton->setContentSize(CCSize(36.6f, 42.6f));
+        if (nodeId == "player-wave")
+            iconButton->setContentSize(CCSize(36.6f, 42.6f));
         
         //fix pos
         iconPlayer->setPosition(CCPoint(21.3f, 21.3f));
@@ -169,7 +170,7 @@ class $modify(MyProfilePage, ProfilePage)
 	void onIconClick(CCObject* sender)
     {
         //shows popup
-        CCMenuItemSpriteExtra* button = static_cast<CCMenuItemSpriteExtra*>(sender);
+        CCMenuItemSpriteExtra* button = as<CCMenuItemSpriteExtra*>(sender);
         IconObject icon = getUnlockData(button->getID(), m_score);
         ItemInfoPopup::create(icon.iconId, icon.unlockType)->show();
 	}

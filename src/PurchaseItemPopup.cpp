@@ -10,19 +10,19 @@ class $modify(PurchaseItemPopup)
         PurchaseItemPopup::onPurchase(sender);
         
         auto scene = CCScene::get();
-        if (getChildOfType<GJShopLayer>(scene, 0) == nullptr)
+        if (scene->getChildByType<GJShopLayer>(0) == nullptr)
         {
             FMODAudioEngine::sharedEngine()->playEffect("buyItem01.ogg");
 
-            GJGarageLayer* garage = getChildOfType<GJGarageLayer>(scene, 0);
+            GJGarageLayer* garage = scene->getChildByType<GJGarageLayer>(0);
             if (garage != nullptr)
             {
-                auto parameters = static_cast<BetterUnlockInfo_Params*>(getChildOfType<ItemInfoPopup>(CCScene::get(), 0)->getUserObject());
+                auto parameters = as<BetterUnlockInfo_Params*>(CCScene::get()->getChildByType<ItemInfoPopup>(0)->getUserObject());
                 
                 //udpate money label
-                CCLabelBMFont* money = static_cast<CCLabelBMFont*>(garage->getChildByID("orbs-label"));
+                CCLabelBMFont* money = as<CCLabelBMFont*>(garage->getChildByID("orbs-label"));
                 if (parameters->m_ShopType == 4)
-                    money = static_cast<CCLabelBMFont*>(garage->getChildByID("diamond-shards-label"));
+                    money = as<CCLabelBMFont*>(garage->getChildByID("diamond-shards-label"));
                 money->setString(std::to_string(std::atoi(money->getString()) - parameters->m_Price).c_str());
                 
                 //get button
@@ -30,58 +30,47 @@ class $modify(PurchaseItemPopup)
                 switch (parameters->m_UnlockType) 
                 {
                     case UnlockType::ShipFire:
-                        iconButton = static_cast<CCMenuItemSpriteExtra*>(
-                            getChildOfType<CCMenu>(
-                                getChildOfType<ListButtonPage>(
-                                    getChildOfType<ExtendedLayer>(
-                                        getChildOfType<BoomScrollLayer>(
-                                            getChildOfType<ListButtonBar>(
-                                                getChildOfType<ListButtonBar>(
-                                                    garage, 0
-                                                ), 0
-                                            ), 0
-                                        ), 0
-                                    ), 0
-                                ), 0
-                            )->getChildByTag(parameters->m_IconId)
+                        iconButton = as<CCMenuItemSpriteExtra*>(
+                            garage->
+                            getChildByType<ListButtonBar>(0)->
+                            getChildByType<ListButtonBar>(0)->
+                            getChildByType<BoomScrollLayer>(0)->
+                            getChildByType<ExtendedLayer>(0)->
+                            getChildByType<ListButtonPage>(0)->
+                            getChildByType<CCMenu>(0)->
+                            getChildByTag(parameters->m_IconId)
                         );
                     break;
                     
                     case UnlockType::GJItem:
-                        iconButton = static_cast<CCMenuItemSpriteExtra*>(
-                            getChildOfType<CCMenu>(
-                                getChildOfType<ListButtonBar>(garage, 0
-                                ), 0
-                            )->getChildByTag(parameters->m_IconId)
+                        iconButton = as<CCMenuItemSpriteExtra*>(
+                            garage->
+                            getChildByType<ListButtonBar>(0)->
+                            getChildByType<CCMenu>(0)->
+                            getChildByTag(parameters->m_IconId)
                         );
                     break;
                     
                     case UnlockType::Col1:
                     case UnlockType::Col2:
-                        iconButton = static_cast<CCMenuItemSpriteExtra*>(
-                            getChildOfType<CCMenu>(
-                                getChildOfType<CCLayer>(
-                                    getChildOfType<CharacterColorPage>(
-                                        garage, 0
-                                    ), 0
-                                ), 0
-                            )->getChildByID(std::to_string(parameters->m_IconId).c_str())
+                        iconButton = as<CCMenuItemSpriteExtra*>(
+                            garage->
+                            getChildByType<CharacterColorPage>(0)->
+                            getChildByType<CCLayer>(0)->
+                            getChildByType<CCMenu>(0)->
+                            getChildByID(std::to_string(parameters->m_IconId).c_str())
                         );
                     break;
                       
                     default:
-                        iconButton = static_cast<CCMenuItemSpriteExtra*>(
-                            getChildOfType<CCMenu>(
-                                getChildOfType<ListButtonPage>(
-                                    getChildOfType<ExtendedLayer>(
-                                        getChildOfType<BoomScrollLayer>(
-                                            getChildOfType<ListButtonBar>(
-                                                garage, 0
-                                            ), 0
-                                        ), 0
-                                    ), 0
-                                ), 0
-                            )->getChildByTag(parameters->m_IconId)
+                        iconButton = as<CCMenuItemSpriteExtra*>(
+                            garage->
+                            getChildByType<ListButtonBar>(0)->
+                            getChildByType<BoomScrollLayer>(0)->
+                            getChildByType<ExtendedLayer>(0)->
+                            getChildByType<ListButtonPage>(0)->
+                            getChildByType<CCMenu>(0)->
+                            getChildByTag(parameters->m_IconId)
                         );
                     break;
                 }
@@ -102,9 +91,7 @@ class $modify(PurchaseItemPopup)
                 
                 //update icon
                 if (parameters->m_UnlockType == UnlockType::Col1 || parameters->m_UnlockType == UnlockType::Col2)
-                {
-                    getChildOfType<CCSprite>(getChildOfType<ColorChannelSprite>(iconButton, 0), 0)->setVisible(false);
-                }
+                    iconButton->getChildByType<ColorChannelSprite>(0)->getChildByType<CCSprite>(0)->setVisible(false);
                 else
                 {
                     iconButton->removeAllChildren();
@@ -114,21 +101,20 @@ class $modify(PurchaseItemPopup)
                     newIcon->setPosition(CCPoint(15, 15));
                     newIcon->setScale(scale);
                     iconButton->addChild(newIcon);
-                    
                 }
                 
                 end:
-                CCTouchDispatcher::get()->unregisterForcePrio(getChildOfType<ItemInfoPopup>(scene, 0));
-                scene->removeChild(getChildOfType<ItemInfoPopup>(scene, 0));
+                CCTouchDispatcher::get()->unregisterForcePrio(scene->getChildByType<ItemInfoPopup>(0));
+                scene->removeChild(scene->getChildByType<ItemInfoPopup>(0));
                 
                 /*  tf why error
                 if(parameters->m_UnlockType == UnlockType::GJItem)
                     garage->onToggleItem(iconButton);*/
             }
             
-            ProfilePage* profile = getChildOfType<ProfilePage>(scene, 0);
+            ProfilePage* profile = scene->getChildByType<ProfilePage>(0);
             if (profile != nullptr)
-                scene->removeChild(static_cast<CCNode*>(scene->getChildren()->objectAtIndex(scene->getChildrenCount()-1))); //remove item popup
+                scene->removeChild(as<CCNode*>(scene->getChildren()->objectAtIndex(scene->getChildrenCount()-1))); //remove item popup
             
         }
     }

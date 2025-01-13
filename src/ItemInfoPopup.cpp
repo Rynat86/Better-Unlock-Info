@@ -37,7 +37,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         
         //if this is unlock, dont add colors related stuff
         int badUnlocks[] = {2, 3, 10, 11, 12, 15};
-        bool isBad = std::find(std::begin(badUnlocks), std::end(badUnlocks), static_cast<int>(UnlockType)) != std::end(badUnlocks);
+        bool isBad = std::find(std::begin(badUnlocks), std::end(badUnlocks), as<int>(UnlockType)) != std::end(badUnlocks);
         if (isBad)
         {
             //is bad but add equip on profile
@@ -62,7 +62,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         m_fields->profileList.clear();
         for (auto node : CCArrayExt<CCNode*>(CCScene::get()->getChildren()))
             if (typeinfo_cast<ProfilePage*>(node) != nullptr)
-                m_fields->profileList.push_back(static_cast<ProfilePage*>(node));
+                m_fields->profileList.push_back(as<ProfilePage*>(node));
 
         updateIconColorsOnProfile();
         addColors();
@@ -73,7 +73,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         //fix android touch - thx devtools :yep:
         if (auto delegate = typeinfo_cast<CCTouchDelegate*>(m_fields->profileList.back()))
             if (auto handler = CCTouchDispatcher::get()->findHandler(delegate))
-                if (auto delegate2 = typeinfo_cast<CCTouchDelegate*>(static_cast<CCMenu*>(m_fields->profileList.back()->m_mainLayer->getChildByID("player-menu"))))
+                if (auto delegate2 = typeinfo_cast<CCTouchDelegate*>(as<CCMenu*>(m_fields->profileList.back()->m_mainLayer->getChildByID("player-menu"))))
                     if (auto handler2 = CCTouchDispatcher::get()->findHandler(delegate2))
                         CCTouchDispatcher::get()->setPriority(handler->getPriority()-1, handler2->getDelegate());
         
@@ -83,7 +83,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
     //user colors checkbox
     void addUseMyColorsCheckBox()
     {
-        if (Loader::get()->isModLoaded("gdutilsdevs.gdutils") && getChildOfType<GJGarageLayer>(CCScene::get(), 0) != nullptr)
+        if (Loader::get()->isModLoaded("gdutilsdevs.gdutils") && CCScene::get()->getChildByType<GJGarageLayer>(0) != nullptr)
             return;
         
         //adds menu
@@ -107,15 +107,16 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         menu->addChild(infoButton);
         m_mainLayer->addChild(menu);
         
-        if (Mod::get()->getSettingValue<bool>("garageColorsToggle") && getChildOfType<GJGarageLayer>(CCScene::get(), 0) != nullptr)
+        if (Mod::get()->getSettingValue<bool>("garageColorsToggle") && CCScene::get()->getChildByType<GJGarageLayer>(0) != nullptr)
             check->toggleWithCallback(true);   
     }
     
     void updateIconColorsOnProfile()
     {
-        if (getChildByIDRecursive("checkbox-menu") != nullptr)
+        auto checkboxMenu = m_mainLayer->getChildByID("checkbox-menu");
+        if (checkboxMenu != nullptr)
         {
-            auto checkbox = getChildOfType<CCMenuItemToggler>(getChildByIDRecursive("checkbox-menu"), 0);
+            auto checkbox = checkboxMenu->getChildByType<CCMenuItemToggler>(0);
             checkbox->setUserObject(CCNode::create());
             checkbox->toggle(true);
             checkbox->toggleWithCallback(false);
@@ -123,7 +124,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         }
         
         auto GM = GameManager::get();
-        auto icon = getChildOfType<SimplePlayer>(getChildOfType<GJItemIcon>(m_mainLayer, 0), 0);
+        auto icon = m_mainLayer->getChildByType<GJItemIcon>(0)->getChildByType<SimplePlayer>(0);
         auto profile = m_fields->profileList.back();
         
         icon->setColor(GM->colorForIdx(profile->m_score->m_color1));
@@ -139,9 +140,6 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
     void onUseMyColorsToggle(CCObject* sender)
     {
         //switches between icons
-        auto GM = GameManager::get();
-        auto checkbox = static_cast<CCMenuItemToggler*>(sender);
-        
         SimplePlayer* icon = nullptr;
         
         //animated profiles fix
@@ -151,16 +149,20 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
                     if (menu->getID() == "")
                         for (auto menuNode : CCArrayExt<CCNode*>(menu->getChildren()))
                             if (auto button = typeinfo_cast<CCMenuItemSpriteExtra*>(menuNode))
-                                if (auto gjicon = getChildOfType<GJItemIcon>(button, 0))
-                                    icon = getChildOfType<SimplePlayer>(gjicon, 0);
+                                if (auto gjicon = button->getChildByType<GJItemIcon>(0))
+                                    icon = gjicon->getChildByType<SimplePlayer>(0);
         
         if (icon == nullptr)
-            icon = getChildOfType<SimplePlayer>(getChildOfType<GJItemIcon>(m_mainLayer, 0), 0);
+            icon = as<GJItemIcon*>(m_mainLayer->getChildByID("item-icon"))->getChildByType<SimplePlayer>(0);
         
         icon->setColor(ccColor3B(175,175,175));
         icon->setSecondColor(ccColor3B(255,255,255));
         icon->disableGlowOutline();
-
+        
+        
+        auto GM = GameManager::get();
+        auto checkbox = as<CCMenuItemToggler*>(sender);
+        
         //profile check
         if (checkbox->getUserObject() != nullptr)
         {
@@ -175,7 +177,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         {
             icon->setColor(GM->colorForIdx(GM->getPlayerColor()));
             icon->setSecondColor(GM->colorForIdx(GM->getPlayerColor2()));
-            icon->setGlowOutline(GM->colorForIdx(GM->getPlayerGlowColor()));    
+            if (GM->m_playerGlow) icon->setGlowOutline(GM->colorForIdx(GM->getPlayerGlowColor()));    
         }
     }
     
@@ -183,7 +185,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
     void addColors()
     {
         CCSize screenSize = CCDirector::sharedDirector()->getWinSize();
-        CCMenu* originalMenu = getChildOfType<CCMenu>(m_mainLayer, 0);
+        CCMenu* originalMenu = as<CCMenu*>(m_mainLayer->getChildByID("button-menu"));
         
         //creates menus for colors and text
         auto buttonColorMenu = CCMenu::create();
@@ -257,7 +259,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         //shows popup
         for (auto button : CCArrayExt<CCMenuItemSpriteExtra*>(m_mainLayer->getChildByID("button-color-menu")->getChildren()) )
             button->setTag(-1);
-        auto parameters = static_cast<BetterUnlockInfo_Params*>(static_cast<CCNode*>(sender)->getUserObject());
+        auto parameters = as<BetterUnlockInfo_Params*>(as<CCNode*>(sender)->getUserObject());
         
         //for equiping cuz glow uses col2
         sender->setTag(1);
@@ -270,9 +272,9 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         std::string labelText = textFromArea();
 
         //doesnt add the button if text contains "unlock" except for secrets
-        if (labelText.find("unlock") != std::string::npos && labelText.find("secret is required") == std::string::npos && labelText.find("treasure") == std::string::npos) return;
+        if (labelText.find("unlock") != std::string::npos && labelText.find("secret is required") == std::string::npos && labelText.find("hidden treasure") == std::string::npos) return;
         
-        auto originalMenu = getChildOfType<CCMenu>(m_mainLayer, 0);
+        auto originalMenu = as<CCMenu*>(m_mainLayer->getChildByID("button-menu"));
         auto infoButton = CCMenuItemSpriteExtra::create(CCSprite::createWithSpriteFrameName("GJ_infoIcon_001.png"), this, menu_selector(MyItemInfoPopup::onDetailButtonClick));
         infoButton->setID("infoButton");
         infoButton->m_baseScale = 0.7f;
@@ -286,37 +288,31 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
     {
         std::string labelText = textFromArea();
 
-        auto parameters = static_cast<BetterUnlockInfo_Params*>(static_cast<CCNode*>(sender)->getUserObject());
+        auto parameters = as<BetterUnlockInfo_Params*>(as<CCNode*>(sender)->getUserObject());
         
-
+        
         if (labelText.find("buy") != std::string::npos) 
         {
-            std::ifstream file(Mod::get()->getResourcesDir() / "shops.json");
-            std::stringstream buffer;
-            buffer << file.rdbuf();
-            auto object = matjson::parse(buffer.str());
-            
             //if owns
-            if (GameStatsManager::sharedState()->isItemUnlocked(parameters->m_UnlockType, parameters->m_IconId))
+            if (trueIsItemUnlocked(parameters->m_IconId, parameters->m_UnlockType))
             {
                 FLAlertLayer::create("Owned!", "You already own this item", "OK")->show();
                 return;
             }
             
+            std::ifstream file(Mod::get()->getResourcesDir() / "shops.json");
+            matjson::Value json = matjson::parse(file).unwrap();
+            
             int shoptype;
             int price;
-            bool notExists = true;
             
-            //find clicked item in json
-            for (int i = 0; i < object.as_array().size(); i++)
-                if (object[i]["UnlockType"].as_int() == static_cast<int>(parameters->m_UnlockType))
-                    for (int j = 0; j < object[i]["items"].as_array().size(); j++)
-                        if (object[i]["items"][j]["IconId"].as_int() == parameters->m_IconId)
+            for (auto list : json)
+                if (list["UnlockType"].asInt().unwrap() == as<int>(parameters->m_UnlockType))
+                    for (auto item : list["items"])
+                        if (item["IconId"].asInt().unwrap() == parameters->m_IconId)
                         {
-                            auto item = object[i]["items"][j];
-                            shoptype = item["ShopType"].as_int();
-                            price = item["Price"].as_int();
-                            notExists = false;
+                            shoptype = item["ShopType"].asInt().unwrap();
+                            price = item["Price"].asInt().unwrap();
                             
                             //if can't afford
                             if (shoptype == 4)
@@ -327,45 +323,44 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
                                     return;
                                 }
                             }
-                            if (item["Price"] > GameStatsManager::sharedState()->getStat("14"))
+                            else
                             {
-                                FLAlertLayer::create("Too expensive!", "You can't afford this item", "OK")->show();
-                                return;
+                                if (item["Price"] > GameStatsManager::sharedState()->getStat("14"))
+                                {
+                                    FLAlertLayer::create("Too expensive!", "You can't afford this item", "OK")->show();
+                                    return;
+                                }
                             }
-
-                            //buy data into popup
-                            if (getChildOfType<GJGarageLayer>(CCScene::get(), 0) != nullptr)
+                            
+                            
+                            //buy data into popup, so can update garage
+                            if (CCScene::get()->getChildByID("GJGarageLayer") != nullptr)
                             {
                                 this->setUserObject(new BetterUnlockInfo_Params(
-                                    item["IconId"].as_int(), 
-                                    static_cast<UnlockType>(item["UnlockType"].as_int()), 
-                                    item["Price"].as_int(),
-                                    item["ShopType"].as_int()
+                                    item["IconId"].asInt().unwrap(),
+                                    parameters->m_UnlockType, 
+                                    item["Price"].asInt().unwrap(),
+                                    item["ShopType"].asInt().unwrap()
                                 ));
                             }
                             
                             //buy popup
                             PurchaseItemPopup::create(
                                 GJStoreItem::create(
-                                    item["ShopItemId"].as_int(),
-                                    item["IconId"].as_int(),
-                                    item["UnlockType"].as_int(),
-                                    item["Price"].as_int(),
-                                    static_cast<ShopType>(item["ShopType"].as_int())
+                                    item["ShopItemId"].asInt().unwrap(),
+                                    item["IconId"].asInt().unwrap(),
+                                    as<int>(parameters->m_UnlockType),
+                                    item["Price"].asInt().unwrap(),
+                                    as<ShopType>(item["ShopType"].asInt().unwrap())
                                 )
                             )->show();
-                            break;
+                            goto buyLoopEnd;
                         }
-            
-            if (notExists)
-            {
-                //note if doesnt exist
-                FLAlertLayer::create("Oh no!", "the item you clicked isn't in json, if you see this report it to @rynat on discord", "OK")->show();
-                return;
-            }
+            //goto right above
+            buyLoopEnd:
             
             //shows how many orbs you have
-            auto buypopup = getChildOfType<PurchaseItemPopup>(CCScene::get(), 0);
+            auto buypopup = CCScene::get()->getChildByType<PurchaseItemPopup>(0);
             
             CCSprite* currentOrbsSpr = CCSprite::createWithSpriteFrameName("currencyOrbIcon_001.png");
             currentOrbsSpr->setID("CurrentSpr");
@@ -390,8 +385,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
             currentCount->setAnchorPoint(CCPoint(1, 0.5f));
             currentCount->setPosition(CCPoint(screenSize.width - 35, screenSize.height - 15));
             
-            std::string minus = "-";
-            minus.append(std::to_string(price));
+            std::string minus = "-" + std::to_string(price);
             CCLabelBMFont* subCount = CCLabelBMFont::create(minus.c_str(), "bigFont.fnt");
             subCount->setID("subCount");
             subCount->setScale(0.6f);
@@ -411,83 +405,72 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
             buypopup->addChild(currentCount);
             buypopup->addChild(subCount);
             buypopup->addChild(afterCount);
-        }
-        
-        //temp
-        /*
-        if (labelText.find("buy") != std::string::npos)
-        {
-            FLAlertLayer::create(nullptr, "Unavailable", "Buying icons from here isn't yet possible in 2.206", "OK", nullptr, 400)->show();
-        }*/
-        
+        }     
         
         if (labelText.find("secret chest") != std::string::npos)
         {
             std::ifstream file(Mod::get()->getResourcesDir() / "chests.json");
-            std::stringstream buffer;
-            buffer << file.rdbuf();
-            auto object = matjson::parse(buffer.str());
+            matjson::Value json = matjson::parse(file).unwrap();
             
-            //find clicked item in json
-            for (int i = 0; i < object.as_array().size(); i++)
-                if (object[i]["UnlockType"].as_int() == static_cast<int>(parameters->m_UnlockType))
-                    for (int j = 0; j < object[i]["chests"].as_array().size(); j++)
-                    {
-                        if (object[i]["chests"][j]["IconId"].as_int() == parameters->m_IconId)
+            for (auto list : json)
+                if (list["UnlockType"].asInt().unwrap() == as<int>(parameters->m_UnlockType))
+                    for (auto item : list["chests"])
+                        if (item["IconId"].asInt().unwrap() == parameters->m_IconId)
                         {
-                            int chestType = object[i]["chests"][j]["GJRewardType"].as_int();
-                            std::string desc("You can find this item in a ");
-                            desc.append(getSecretChestDesc(chestType));
-                            FLAlertLayer::create(nullptr, "Which one? This one!", desc, "OK", nullptr, 300)->show();
+                            int chestType = item["GJRewardType"].asInt().unwrap();
+                            std::string desc = "You can find this item in a " + std::string(getSecretChestDesc(chestType));
+                            
+                            int size = 300;
+                            if (chestType == 9)
+                                size = 350;
+                            
+                            FLAlertLayer::create(nullptr, "Which one? This one!", desc, "OK", nullptr, size)->show();
                             return;
-                        }  
-                    }
-                        
-                        
+                        }
         }
 
         if (labelText.find("special chest") != std::string::npos)
         {
             std::ifstream file(Mod::get()->getResourcesDir() / "special.json");
-            std::stringstream buffer;
-            buffer << file.rdbuf();
-            auto object = matjson::parse(buffer.str());
+            matjson::Value json = matjson::parse(file).unwrap();
             
-            //find clicked item in json
-            for (int i = 0; i < object.as_array().size(); i++)
-                if (object[i]["UnlockType"].as_int() == static_cast<int>(parameters->m_UnlockType))
-                    for (int j = 0; j < object[i]["chests"].as_array().size(); j++)
-                        if (object[i]["chests"][j]["IconId"].as_int() == parameters->m_IconId)
+            for (auto list : json)
+                if (list["UnlockType"].asInt().unwrap() == as<int>(parameters->m_UnlockType))
+                    for (auto item : list["chests"])
+                        if (item["IconId"].asInt().unwrap() == parameters->m_IconId)
                         {
-                            //ChestId - removed "" and leading 0
-                            int chestType = object[i]["chests"][j]["ChestId"].as_int();
+                            std::string chestType = item["ChestId"].asString().unwrap();
+                            int chestTypeInt = std::atoi(chestType.c_str());
+                            
                             int size = 300;
-                            if (chestType >= 4 && chestType <= 6 || chestType >= 12 && chestType <= 21) //12-21 temp
+                            if (chestTypeInt >= 4 && chestTypeInt <= 6 || chestTypeInt >= 12 && chestTypeInt <= 21)
                                 size = 350;
-                            std::string desc("You can unlock this item ");
-                            desc.append(getSpecialChestDesc(chestType));
+                            
+                            std::string desc = "You can unlock this item ";
+                            if (chestType[0] == 'w')
+                                desc += "at <cj>The Wraith</c> by entering the code <cg>" + item["Code"].asString().unwrap() + "</c>";
+                            else
+                                desc += std::string(getSpecialChestDesc(chestTypeInt));
+                            
                             FLAlertLayer::create(nullptr, "Which one? This one!", desc, "OK", nullptr, size)->show();
                             return;
                         }
             
         }
-
+        
         //note, coins from vaults
         if (labelText.find("secret is required") != std::string::npos || labelText.find("treasure") != std::string::npos)
         {
             std::ifstream file(Mod::get()->getResourcesDir() / "secrets.json");
-            std::stringstream buffer;
-            buffer << file.rdbuf();
-            auto object = matjson::parse(buffer.str());
+            matjson::Value json = matjson::parse(file).unwrap();
             
             //find clicked item in json
-            for (int i = 0; i < object.as_array().size(); i++)
-                if (object[i]["UnlockType"].as_int() == static_cast<int>(parameters->m_UnlockType))
-                    for (int j = 0; j < object[i]["items"].as_array().size(); j++)
-                        if (object[i]["items"][j]["IconId"].as_int() == parameters->m_IconId)
+            for (auto list : json)
+                if (list["UnlockType"].asInt().unwrap() == as<int>(parameters->m_UnlockType))
+                    for (auto item : list["items"])
+                        if (item["IconId"].asInt().unwrap() == parameters->m_IconId)
                         {
-                            auto icon = object[i]["items"][j];
-                            std::string desc("You can unlock this item ");
+                            std::string desc = "You can unlock this item ";
                             
                             //0 = destry icons
                             //-1 = master detective
@@ -495,50 +478,46 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
                             //1 = vault
                             //2 = vault of secrets
                             //3 = chamber of time
-                            switch (icon["Vault"].as_int())
+                            switch (item["Vault"].asInt().unwrap())
                             {
                             case 0:
-                            desc.append("at the <cj>Main Menu</c> by <cr>Destroying</c> the moving <cg>Icons</c>");
+                            desc += "at the <cj>Main Menu</c> by <cr>Destroying</c> the moving <cg>Icons</c>";
                             break;
                             
                             case -1:
-                            desc.append("at the <cj>Main Levels Selection Screen</c> by <cy>Scrolling</c> past all the levels 3 times and <cy>Clicking</c> the <cy>Secret Coin</c> at the <cg>Comming Soon!</c> page");
+                            desc += "at the <cj>Main Levels Selection Screen</c> by <cy>Scrolling</c> past all the levels 3 times and <cy>Clicking</c> the <cy>Secret Coin</c> at the <cg>Comming Soon!</c> page";
                             break;
                             
                             case -2:
-                            desc.append("at the <cj>Main Menu</c> by <cr>Destroying</c> <cy>This Icon</c> when it'll be moving");
+                            desc += "at the <cj>Main Menu</c> by <cr>Destroying</c> <cy>This Icon</c> when it'll be moving";
                             break;
                             
                             case 1:
-                            desc.append("at <cj>The Vault</c> by entering the code <cg>");
-                            if (parameters->m_IconId == 64) desc.append(GameManager::sharedState()->m_playerName);
-                            else desc.append(icon["Code"].as_string());
-                            desc.append("</c>");
+                            desc += "at <cj>The Vault</c> by entering the code <cg>";
+                            if (parameters->m_IconId == 64) desc += GameManager::sharedState()->m_playerName;
+                            else desc += item["Code"].asString().unwrap();
+                            desc += "</c>";
                             break;
                             
                             case 2:
-                            desc.append("at the <cj>Vault of Secrets</c> by entering the code <cg>");
-                            if (parameters->m_IconId == 76) desc.append(std::to_string(GameStatsManager::sharedState()->getStat("6")));
+                            desc += "at the <cj>Vault of Secrets</c> by entering the code <cg>";
+                            if (parameters->m_IconId == 76) desc += std::to_string(GameStatsManager::sharedState()->getStat("6"));
                             else if (parameters->m_IconId == 78) //uberhacker
                             {
                                 int code = GameManager::sharedState()->m_secretNumber.value()*-1;
                                 if (code == 0) 
                                 {
-                                    desc.append(icon["Code"].as_string());
-                                    desc.append("</c>");
-                                    desc.append(" and then checking this pop up again for the answer");
+                                    desc += item["Code"].asString().unwrap() + "</c> and then checking this pop up again for the answer";
                                     break;
                                 }
-                                desc.append(std::to_string(code));
+                                desc += std::to_string(code);
                             }
-                            else desc.append(icon["Code"].as_string());
-                            desc.append("</c>");
+                            else desc += item["Code"].asString().unwrap();
+                            desc += "</c>";
                             break;
                             
                             case 3:
-                            desc.append("at the <co>Chamber of Time</c> by entering the code <cg>");
-                            desc.append(icon["Code"].as_string());
-                            desc.append("</c>");
+                            desc += "at the <co>Chamber of Time</c> by entering the code <cg>" + item["Code"].asString().unwrap() + "</c>";
                             break;
                             
                             default:
@@ -551,18 +530,18 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
                             return;
                         }
         }
-                
     }
     
     std::string textFromArea()
     {
-        TextArea* textArea = getChildOfType<TextArea>(m_mainLayer, 0);
+        auto textArea = as<TextArea*>(m_mainLayer->getChildByID("description-area"));
         
         //conflict MH
-        if (textArea == nullptr) return std::string("unlock 2.21");
+        if (textArea == nullptr)
+            return std::string("unlock 2.21");
         
         std::string labelText = "";
-        auto multiline = getChildOfType<MultilineBitmapFont>(textArea, 0);
+        auto multiline = textArea->getChildByType<MultilineBitmapFont>(0);
         for (auto label : CCArrayExt<CCLabelBMFont*>(multiline->getChildren()) )
             labelText.append(label->getString());
         
@@ -573,14 +552,15 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
     {
         switch (iGJRewardType)
         {
-        case 1: return "<cy>4 hour? Chest</c>"; break;
-        case 2: return "<cy>24 hour? Chest</c>"; break;
+        case 1: return "<cy>4 hour Chest</c>"; break;
+        case 2: return "<cy>24 hour Chest</c>"; break;
         case 3: return "<cy>1 Key Chest</c>"; break;
         case 4: return "<cy>5 Key Chest</c>"; break;
         case 5: return "<cy>10 Key Chest</c>"; break;
         case 6: return "<cy>25 Key Chest</c>"; break;
         case 7: return "<cy>50 Key Chest</c>"; break;
         case 8: return "<cy>100 Key Chest</c>"; break;
+        case 9: return "<cy>Gold Wraith Chest</c>"; break;
         default: return "null"; break;
         }
     }
@@ -619,161 +599,139 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
     }
 
     //progress bar
+    typedef struct AchiObj {
+        std::string achiLong = "";
+        std::string achiShort = "";
+        
+        int currentValueFrom = 0;
+        int currentValue = 0;
+        int maxValue = 1;
+        
+        std::string sprite = "";
+        float scale = 0.5f;
+        float moveY = 0;
+        ccColor3B color = {0, 0, 0};
+    } AchiObj;
+    
     void addCompletionProgress(int iconId, UnlockType unlockType) 
     {
         if (textFromArea().find("2.21") != std::string::npos) return; //note, 2.21
         
-        CCSize screenSize = CCDirector::sharedDirector()->getWinSize();
-        
-        CCMenu* menu = CCMenu::create();
-        menu->setID("completionMenu");
-        
-        Slider* slider = Slider::create(this, nullptr);
-        slider->setVisible(false);
-        CCSprite* sliderSprite = getChildOfType<CCSprite>(slider, 0);
-        sliderSprite->setID("completionSlider");
-        sliderSprite->setAnchorPoint(CCPoint(0, 0.5f));
-        sliderSprite->setScale(0.45f);
-        
-        /*
-        auto bar = getChildOfType<CCSprite>(getChildOfType<CCSprite>(slider, 0), 0);
-        auto texture = CCSprite::create("sliderBar2.png")->getTexture();
-        texture->setTexParameters(new ccTexParams{GL_LINEAR, GL_LINEAR, GL_REPEAT, GL_REPEAT});
-        bar->setTexture(texture);*/
-
-        CCSprite* icon = CCSprite::createWithSpriteFrameName("GJ_lock_001.png");
-        icon->setPosition(CCPoint(129, -84));
-        
-        if (trueIsItemUnlocked(iconId, unlockType))
-        {
-            icon = CCSprite::createWithSpriteFrameName("GJ_achImage_001.png");
-            icon->setPosition(CCPoint(130, -85));
-        }
-        icon->setID("completionIcon");
-        icon->setScale(0.45f);
-        
-        
-        //progress bar
-        int currentValue = 0;
-        int maxValue = 1;
-        
-        std::string achiLong = "";
-        std::string achiShort = "";
+        AchiObj achiobj = {};
         
         std::ifstream achifile(Mod::get()->getResourcesDir() / "achievements.json");
-        std::stringstream achibuffer;
-        achibuffer << achifile.rdbuf();
-        auto achi = matjson::parse(achibuffer.str());
-        
-        for (int i = 0; i < achi.as_array().size(); i++)
-            if (achi[i]["UnlockType"].as_int() == static_cast<int>(unlockType))
-                for (int j = 0; j < achi[i]["items"].as_array().size(); j++)
-                {
-                    if (achi[i]["items"][j]["IconId"].as_int() == iconId)
+        matjson::Value achi = matjson::parse(achifile).unwrap();
+        for (auto list : achi)
+            if (list["UnlockType"].asInt().unwrap() == as<int>(unlockType))
+                for (auto item : list["items"])
+                    if (item["IconId"].asInt().unwrap() == iconId)
                     {
-                        maxValue = achi[i]["items"][j]["MaxValue"].as_int();
-                        achiLong = achi[i]["items"][j]["AchievementIdFull"].as_string();
-                        achiShort = achi[i]["items"][j]["AchievementIdShort"].as_string();
-                        break;
-                    }  
-                }
-                
+                        achiobj.achiLong = item["AchievementIdFull"].asString().unwrap();
+                        achiobj.achiShort = item["AchievementIdShort"].asString().unwrap();
+                        achiobj.maxValue = item["MaxValue"].asInt().unwrap();
+                        goto achiLoopEnd;
+                    }
+        achiLoopEnd:
+        
+        //if isnt achievement icon
+        if (achiobj.achiShort == "")
+        {
+            setCompletionProgressDataNotAchi(iconId, unlockType, &achiobj);
+            addCompletionProgressNodes(iconId, unlockType, &achiobj);
+            return;
+        }
+        
         
         std::ifstream achitypefile(Mod::get()->getResourcesDir() / "achievementsTypes.json");
-        std::stringstream achitypebuffer;
-        achitypebuffer << achitypefile.rdbuf();
-        auto achitypes = matjson::parse(achitypebuffer.str());
+        matjson::Value achitypes = matjson::parse(achitypefile).unwrap();
+        achiobj.currentValueFrom = achitypes[achiobj.achiShort]["CurrentValueFrom"].asInt().unwrap();
+        achiobj.sprite = achitypes[achiobj.achiShort]["Sprite"].asString().unwrap();
+        achiobj.scale = achitypes[achiobj.achiShort]["Scale"].asDouble().unwrap();
+        achiobj.moveY = achitypes[achiobj.achiShort]["MoveY"].asDouble().unwrap();
+        achiobj.color = ccColor3B(
+            achitypes[achiobj.achiShort]["Color"]["R"].asInt().unwrap(),
+            achitypes[achiobj.achiShort]["Color"]["G"].asInt().unwrap(),
+            achitypes[achiobj.achiShort]["Color"]["B"].asInt().unwrap()
+        );
+                
+        getCompletionProgressData(iconId, unlockType, &achiobj);
         
-        int currentValueFrom = 0;
-        std::string sprite = "";
-        float scale = 0.5f;
-        float moveY = 0;
+        if (achiobj.currentValue == -1) return;
         
-        auto achitypeObject = achitypes[achiShort].as_object();
-        if (achitypeObject.size() > 0)
-        {
-            currentValueFrom = achitypeObject["CurrentValueFrom"].as_int();
-            sprite = achitypeObject["Sprite"].as_string();
-            scale = achitypeObject["Scale"].as_double(); 
-            moveY = achitypeObject["MoveY"].as_double();
-        }
-            
+        addCompletionProgressNodes(iconId, unlockType, &achiobj);
+    }
+    
+    void getCompletionProgressData(int iconId, UnlockType unlockType, AchiObj* achiobj)
+    {
         GameStatsManager* GSM = GameStatsManager::sharedState();
         GameLevelManager* GLM = GameLevelManager::sharedState();
         
         //legends table is private lol
-        switch (currentValueFrom)
+        switch (achiobj->currentValueFrom)
         {
-        case -1 : currentValue = -1; break;
-        case -2 : currentValue = trueIsItemUnlocked(iconId, unlockType); break;
-        case -3 : currentValue = GLM->m_followedCreators->count(); break;
+        case -1 : achiobj->currentValue = -1; break;
+        case -2 : achiobj->currentValue = trueIsItemUnlocked(iconId, unlockType); break;
+        case -3 : achiobj->currentValue = GLM->m_followedCreators->count(); break;
         case -4 : 
             switch (iconId)
             {
             case 59:
-            currentValue = GSM->getCollectedCoinsForLevel(static_cast<GJGameLevel*>(GLM->m_mainLevels->objectForKey("20")));
+            achiobj->currentValue = GSM->getCollectedCoinsForLevel(as<GJGameLevel*>(GLM->m_mainLevels->objectForKey("20")));
             break;
             
             case 60:
-            currentValue = GSM->getCollectedCoinsForLevel(static_cast<GJGameLevel*>(GLM->m_mainLevels->objectForKey("18")));
+            achiobj->currentValue = GSM->getCollectedCoinsForLevel(as<GJGameLevel*>(GLM->m_mainLevels->objectForKey("18")));
             break;
             
             case 14:
-            currentValue = GSM->getCollectedCoinsForLevel(static_cast<GJGameLevel*>(GLM->m_mainLevels->objectForKey("14")));
+            achiobj->currentValue = GSM->getCollectedCoinsForLevel(as<GJGameLevel*>(GLM->m_mainLevels->objectForKey("14")));
             break;
             
-            default: currentValue = -1; break;
+            default: achiobj->currentValue = -1; break;
             }
             break;
-        case -5 : 
-            if (achiLong.back() == 'a')
-            {
-                currentValue = static_cast<GJGameLevel*>(GLM->m_mainLevels->objectForKey(std::to_string(std::atoi(achiLong.substr(18, 2).c_str()))))->m_practicePercent / 100;
-                sprite = "checkpoint_01_001.png";
-            }
-            else
-                currentValue = GSM->hasCompletedMainLevel(std::atoi(achiLong.substr(18, 2).c_str()));
-            break;
-        case -6 :
-            if (maxValue > 1) currentValue = GSM->getStat("9");
-            else currentValue = trueIsItemUnlocked(iconId, unlockType);
-            break;
+        case -5 : achiobj->currentValue = as<GJGameLevel*>(GLM->m_mainLevels->objectForKey(std::to_string(std::atoi(achiobj->achiLong.substr(18, 2).c_str()))))->m_practicePercent == 100; break;
+        case -6 : achiobj->currentValue = GSM->hasCompletedMainLevel(std::atoi(achiobj->achiLong.substr(18, 2).c_str())); break;
         case -7 :
+            if (achiobj->maxValue > 1) achiobj->currentValue = GSM->getStat("9");
+            else achiobj->currentValue = trueIsItemUnlocked(iconId, unlockType);
+            break;
+        case -8 :
         {
             int shards[5] = {GSM->getStat("16"), GSM->getStat("17"), GSM->getStat("18"), GSM->getStat("19"), GSM->getStat("20")};
             int smallest = INT_MAX;
             for (int i = 0; i < 4; i++)
                 if (smallest > shards[i])
                     smallest = shards[i];
-            currentValue = smallest;
+            achiobj->currentValue = smallest;
             break;
         }
-        case -8 : 
+        case -9 : 
         {   
             int shards[5] = {GSM->getStat("23"), GSM->getStat("24"), GSM->getStat("25"), GSM->getStat("26"), GSM->getStat("27")};
             int smallest = INT_MAX;
             for (int i = 0; i < 4; i++)
                 if (smallest > shards[i])
                     smallest = shards[i];
-            currentValue = smallest;
+            achiobj->currentValue = smallest;
             break;
         }
-        case -9 : 
-            if (achiLong.back() == '1')
+        case -10 : 
+            if (achiobj->achiLong.back() == '1')
                 for (int i = 1; i <= 3; i++)
-                    currentValue += GSM->hasCompletedMainLevel(i);
-            else currentValue = GSM->hasCompletedMainLevel(14);
+                    achiobj->currentValue += GSM->hasCompletedMainLevel(i);
+            else achiobj->currentValue = GSM->hasCompletedMainLevel(14);
             break;
-        case -10 : currentValue = GSM->hasCompletedMainLevel(achiLong.at(19) - '0' + 5000); break;
-        case -11 : currentValue = GSM->getCollectedCoinsForLevel(static_cast<GJGameLevel*>(GLM->m_mainLevels->objectForKey(std::string("50").append(achiLong.substr(18, 2))))); break;
-        case -12 :
+        case -11 : achiobj->currentValue = GSM->hasCompletedMainLevel(achiobj->achiLong.at(19) - '0' + 5000); break;
+        case -12 : achiobj->currentValue = GSM->getCollectedCoinsForLevel(as<GJGameLevel*>(GLM->m_mainLevels->objectForKey(std::string("50").append(achiobj->achiLong.substr(18, 2))))); break;
+        case -13 :
         {
             /*FriendsProfilePage::create error
             FriendsProfilePage* friends = FriendsProfilePage::create(UserListType::Friends);
             for (auto node : CCArrayExt<CCNode*>(friends->m_mainLayer->getChildren()))
                 if (typeinfo_cast<CCLabelBMFont*>(node) != nullptr)
                 {
-                    std::string nodetext = static_cast<CCLabelBMFont*>(node)->getString();
+                    std::string nodetext = as<CCLabelBMFont*>(node)->getString();
                     std::string number = nodetext.substr(nodetext.find(":") + 2, nodetext.length() - 1 - nodetext.find(":") + 2);
                     int num = std::atoi(number.c_str());
                     if (num > 0) currentValue = num;
@@ -783,132 +741,163 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
             break;
         }
         default: 
-            if (currentValueFrom >= 30 && currentValueFrom <= 39) 
-                currentValue = GSM->getStat(std::to_string(currentValueFrom).c_str()) / 100; //paths
-            else if (currentValueFrom >= 1)
-                currentValue = GSM->getStat(std::to_string(currentValueFrom).c_str());
+            if (achiobj->currentValueFrom >= 30 && achiobj->currentValueFrom <= 39) 
+                achiobj->currentValue = GSM->getStat(std::to_string(achiobj->currentValueFrom).c_str()) / 100; //paths
+            else if (achiobj->currentValueFrom >= 1)
+                achiobj->currentValue = GSM->getStat(std::to_string(achiobj->currentValueFrom).c_str());
             else
-            {
-                currentValue = trueIsItemUnlocked(iconId, unlockType);
-                std::string labelText = textFromArea();
-                
-                if(labelText.find("buy") != std::string::npos)
-                {
-                    sprite = "currencyOrbIcon_001.png";
-                    scale = 0.7f;
-                }
-                else if (labelText.find("secret chest") != std::string::npos)
-                {
-                    sprite = "chest_03_02_001.png";
-                    scale = 0.15f;
-                }
-                else if (labelText.find("special chest") != std::string::npos)
-                {
-                    sprite = "chest_02_02_001.png";
-                    scale = 0.15f;
-                }
-                else
-                {
-                    
-                    std::ifstream specialfile(Mod::get()->getResourcesDir() / "special.json");
-                    std::stringstream specialbuffer;
-                    specialbuffer << specialfile.rdbuf();
-                    auto special = matjson::parse(specialbuffer.str());
-                    
-                    std::string chestId = "";
-                    
-                    for (int i = 0; i < special.as_array().size(); i++)
-                        if (special[i]["UnlockType"].as_int() == static_cast<int>(unlockType))
-                            for (int j = 0; j < special[i]["chests"].as_array().size(); j++)
-                                if (special[i]["chests"][j]["IconId"].as_int() == iconId)
-                                    chestId = special[i]["chests"][j]["ChestId"].as_string();
-                    
-                    if (labelText.find("gauntlet") != std::string::npos)
-                    {
-                        CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile("GauntletSheet.plist", "GauntletSheet.png");
-                        std::string number = chestId.substr(chestId.find("_") + 1, chestId.length() - 1 - chestId.find("_") + 1);
-                        int num = std::atoi(number.c_str());
-                        
-                        switch (num)
-                        {
-                        case 1: sprite = "island_fire_001.png"; break;
-                        case 2: sprite = "island_ice_001.png"; break;
-                        case 3: sprite = "island_poison_001.png"; break;
-                        case 4: sprite = "island_shadow_001.png"; break;
-                        case 5: sprite = "island_lava_001.png"; break;
-                        case 6: sprite = "island_bonus_001.png"; break;
-                        case 7: sprite = "island_chaos_001.png"; break;
-                        case 8: sprite = "island_demon_001.png"; break;
-                        case 9: sprite = "island_time_001.png"; break;
-                        case 10: sprite = "island_crystal_001.png"; break;
-                        case 11: sprite = "island_magic_001.png"; break;
-                        case 12: sprite = "island_spike_001.png"; break;
-                        case 13: sprite = "island_monster_001.png"; break;
-                        case 14: sprite = "island_doom_001.png"; break;
-                        case 15: sprite = "island_death_001.png"; break;
-                        default:
-                            std::string numtext = "";
-                            if (num - 15 < 10) numtext = "0";
-                            numtext.append(std::to_string(num-15));
-                            sprite = std::string("island_new").append(numtext).append("_001.png");
-                            
-                            //ncs
-                            if(num > 50) 
-                                sprite = std::string("island_ncs0").append(std::to_string(num-50)).append("_001.png");
-                            
-                            break;
-                        }
-                        scale = 0.2f;
-                        moveY = -3;
-                    }
-                    if (labelText.find("Complete the Path") != std::string::npos)
-                    {
-                        std::string number = chestId.substr(chestId.find("_") + 1, chestId.length() - 1 - chestId.find("_") + 1);
-                        int num = std::atoi(number.c_str());
-                        
-                        std::string numtext = "";
-                        if (num != 10) numtext = "0";
-                        numtext.append(number);
-                        sprite = std::string("pathIcon_").append(numtext).append("_001.png");
-                        
-                        scale = 0.35f;
-                    }
-                }
-            }
+                FLAlertLayer::create("You shouldn't see this", "If you see this msg @rynat on discord", "OK")->show();
             break;
         }
+    }
+    
+    void setCompletionProgressDataNotAchi(int iconId, UnlockType unlockType, AchiObj* achiobj)
+    {
+        achiobj->currentValue = trueIsItemUnlocked(iconId, unlockType);
+        std::string labelText = textFromArea();
         
-        
-        if (currentValue == -1) return; //if like stuff is sent from servers
-        
-        slider->setValue(static_cast<float>(currentValue) / static_cast<float>(maxValue));
-        sliderSprite->setPosition(CCPoint(32, -85));
-        //bar->setColor(ccColor3B({255, 0, 0})); //color
-        
-
-        //create labels
-        CCLabelBMFont* labelCount = CCLabelBMFont::create(std::to_string(currentValue).c_str(), "bigFont.fnt");
-        CCLabelBMFont* labelSlash = CCLabelBMFont::create("/", "bigFont.fnt");
-        CCLabelBMFont* labelMax = CCLabelBMFont::create(std::to_string(maxValue).c_str(), "bigFont.fnt");
-        
-        if (currentValue >= 1000)
+        if(labelText.find("buy") != std::string::npos)
         {
-            float newCurrent = std::round((static_cast<float>(currentValue) / 1000) * 10) / 10;
+            achiobj->sprite = "currencyOrbIcon_001.png";
+            achiobj->scale = 0.7f;
+        }
+        else if (labelText.find("secret chest") != std::string::npos)
+        {
+            achiobj->sprite = "chest_03_02_001.png";
+            achiobj->scale = 0.15f;
+        }
+        else if (labelText.find("special chest") != std::string::npos)
+        {
+            achiobj->sprite = "chest_02_02_001.png";
+            achiobj->scale = 0.15f;
+        }
+        else
+        {
+            std::ifstream file(Mod::get()->getResourcesDir() / "special.json");
+            matjson::Value json = matjson::parse(file).unwrap();
+            std::string chestId = "";
             
-            labelCount = CCLabelBMFont::create(fmt::format("{}", newCurrent).append("K").c_str(), "bigFont.fnt");
-            if (currentValue >= 1000000)
+            for (auto list : json)
+                if (list["UnlockType"].asInt().unwrap() == as<int>(unlockType))
+                    for (auto item : list["chests"])
+                        if (item["IconId"].asInt().unwrap() == iconId)
+                            chestId = item["ChestId"].asString().unwrap();
+            
+            if (labelText.find("gauntlet") != std::string::npos)
             {
-                newCurrent = std::round((static_cast<float>(currentValue) / 1000000) * 10) / 10;
+                CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile("GauntletSheet.plist", "GauntletSheet.png");
+                int num = std::atoi(chestId.substr(2, std::string::npos).c_str());
+                
+                switch (num)
+                {
+                case 1: achiobj->sprite = "island_fire_001.png"; break;
+                case 2: achiobj->sprite = "island_ice_001.png"; break;
+                case 3: achiobj->sprite = "island_poison_001.png"; break;
+                case 4: achiobj->sprite = "island_shadow_001.png"; break;
+                case 5: achiobj->sprite = "island_lava_001.png"; break;
+                case 6: achiobj->sprite = "island_bonus_001.png"; break;
+                case 7: achiobj->sprite = "island_chaos_001.png"; break;
+                case 8: achiobj->sprite = "island_demon_001.png"; break;
+                case 9: achiobj->sprite = "island_time_001.png"; break;
+                case 10: achiobj->sprite = "island_crystal_001.png"; break;
+                case 11: achiobj->sprite = "island_magic_001.png"; break;
+                case 12: achiobj->sprite = "island_spike_001.png"; break;
+                case 13: achiobj->sprite = "island_monster_001.png"; break;
+                case 14: achiobj->sprite = "island_doom_001.png"; break;
+                case 15: achiobj->sprite = "island_death_001.png"; break;
+                case 51: achiobj->sprite = "island_ncs01_001.png"; break;
+                case 52: achiobj->sprite = "island_ncs02_001.png"; break;
+                case 53: achiobj->sprite = "island_space_001.png"; break;
+                case 54: achiobj->sprite = "island_cosmos_001.png"; break;
+                default:
+                    std::string numtext = "";
+                    if (num - 15 < 10) numtext = "0";
+                    numtext.append(std::to_string(num-15));
+                    achiobj->sprite = std::string("island_new").append(numtext).append("_001.png");
+                }
+                achiobj->scale = 0.2f;
+                achiobj->moveY = -3;
+            }
+            if (labelText.find("Complete the Path") != std::string::npos)
+            {
+                std::string number = chestId.substr(3, std::string::npos);
+                
+                std::string path = "path";
+                if (number != "10") path.append("0");
+                path.append(number);
+                
+                std::ifstream achitypefile(Mod::get()->getResourcesDir() / "achievementsTypes.json");
+                matjson::Value achitypes = matjson::parse(achitypefile).unwrap();
+                achiobj->sprite = achitypes[path]["Sprite"].asString().unwrap();
+                achiobj->scale = achitypes[path]["Scale"].asDouble().unwrap();
+                achiobj->moveY = achitypes[path]["MoveY"].asDouble().unwrap();
+                achiobj->color = ccColor3B(
+                    achitypes[path]["Color"]["R"].asInt().unwrap(),
+                    achitypes[path]["Color"]["G"].asInt().unwrap(),
+                    achitypes[path]["Color"]["B"].asInt().unwrap()
+                );
+            }
+        }
+    }
+    
+    void addCompletionProgressNodes(int iconId, UnlockType unlockType, AchiObj* achiobj)
+    {
+        CCSize screenSize = CCDirector::sharedDirector()->getWinSize();
+        
+        CCMenu* menu = CCMenu::create();
+        menu->setID("completionMenu");
+        
+        
+        Slider* slider = Slider::create(this, nullptr);
+        if (achiobj->color != (ccColor3B){0,0,0})
+        {
+            ccTexParams sliderParams = {GL_NEAREST, GL_NEAREST, GL_REPEAT, GL_REPEAT};
+            slider->m_sliderBar->setTexture(CCSprite::create(fmt::format("{}/{}", Mod::get()->getID(), "_sliderBar.png").c_str())->getTexture());
+            slider->m_sliderBar->getTexture()->setTexParameters(&sliderParams);
+            slider->m_sliderBar->setColor(achiobj->color);
+        }
+        slider->removeChild(slider->m_touchLogic);
+        slider->setID("completionSlider");
+        slider->setScale(0.45f);
+        slider->setPosition(CCPoint(-77, -173));
+        slider->setValue(as<float>(achiobj->currentValue) / as<float>(achiobj->maxValue));
+        menu->addChild(slider);
+        
+        
+        CCSprite* icon = CCSprite::createWithSpriteFrameName("GJ_lock_001.png");
+        icon->setPosition(CCPoint(129, -84));
+        if (trueIsItemUnlocked(iconId, unlockType))
+        {
+            icon = CCSprite::createWithSpriteFrameName("GJ_achImage_001.png");
+            icon->setPosition(CCPoint(130, -85));
+        }
+        icon->setID("completionIcon");
+        icon->setScale(0.45f);
+        menu->addChild(icon);
+        
+        
+        //create labels
+        CCLabelBMFont* labelCount = CCLabelBMFont::create(std::to_string(achiobj->currentValue).c_str(), "bigFont.fnt");
+        CCLabelBMFont* labelSlash = CCLabelBMFont::create("/", "bigFont.fnt");
+        CCLabelBMFont* labelMax = CCLabelBMFont::create(std::to_string(achiobj->maxValue).c_str(), "bigFont.fnt");
+        
+        if (achiobj->currentValue >= 1000)
+        {
+            float newCurrent = std::round((achiobj->currentValue / 1000.f) * 10) / 10;
+            labelCount = CCLabelBMFont::create(fmt::format("{}", newCurrent).append("K").c_str(), "bigFont.fnt");
+            if (achiobj->currentValue >= 1000000)
+            {
+                newCurrent = std::round((achiobj->currentValue / 1000000.f) * 10) / 10;
                 labelCount = CCLabelBMFont::create(fmt::format("{}", newCurrent).append("M").c_str(), "bigFont.fnt");
             }
         }
-        if (maxValue >= 1000)
+        if (achiobj->maxValue >= 1000)
         {
-            float newMax = std::round((static_cast<float>(maxValue) / 1000) * 10) / 10;
+            float newMax = std::round((achiobj->maxValue / 1000.f) * 10) / 10;
             labelMax = CCLabelBMFont::create(fmt::format("{}", newMax).append("K").c_str(), "bigFont.fnt");
-            if (maxValue >= 1000000)
+            if (achiobj->maxValue >= 1000000)
             {
-                newMax = std::round((static_cast<float>(maxValue) / 1000000) * 10) / 10;
+                newMax = std::round((achiobj->maxValue / 1000000.f) * 10) / 10;
                 labelMax = CCLabelBMFont::create(fmt::format("{}", newMax).append("M").c_str(), "bigFont.fnt");
             }
         }
@@ -928,25 +917,26 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         labelCount->setAnchorPoint(CCPoint(1, 0.5f));
         labelMax->setAnchorPoint(CCPoint(0, 0.5f));
         
-        if (sprite != "")
-        {
-            if (achiShort == "gauntlets")
-                CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile("GauntletSheet.plist", "GauntletSheet.png");
-                
-            CCSprite* groupIcon = CCSprite::createWithSpriteFrameName(sprite.c_str());
-            if (sprite[0] == '_') groupIcon = CCSprite::createWithSpriteFrameName(fmt::format("{}/{}", Mod::get()->getID(), sprite).c_str());
-            if (sprite == "GJ_downloadsIcon_001.png") groupIcon->setRotation(180);
-            groupIcon->setID("completionGroupIcon");
-            groupIcon->setPosition(CCPoint(labelMax->getPositionX() + labelMax->getContentSize().width * 0.35f + groupIcon->getContentSize().width/(2.f/scale) + 1, -97.5f + moveY));
-            groupIcon->setScale(scale);
-            menu->addChild(groupIcon);
-        }
-        
-        menu->addChild(sliderSprite);
-        menu->addChild(icon);
         menu->addChild(labelCount);
         menu->addChild(labelSlash);
         menu->addChild(labelMax);
+        
+        
+        //add type icon
+        if (achiobj->sprite != "")
+        {
+            if (achiobj->achiShort == "gauntlets")
+                CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile("GauntletSheet.plist", "GauntletSheet.png");
+                
+            CCSprite* groupIcon = CCSprite::createWithSpriteFrameName(achiobj->sprite.c_str());
+            if (achiobj->sprite[0] == '_') groupIcon = CCSprite::createWithSpriteFrameName(fmt::format("{}/{}", Mod::get()->getID(), achiobj->sprite).c_str());
+            else if (achiobj->sprite == "GJ_downloadsIcon_001.png") groupIcon->setRotation(180);
+            groupIcon->setID("completionGroupIcon");
+            groupIcon->setPosition(CCPoint(labelMax->getPositionX() + labelMax->getContentSize().width * 0.35f + groupIcon->getContentSize().width/(2.f/achiobj->scale) + 1, -97.5f + achiobj->moveY));
+            groupIcon->setScale(achiobj->scale);
+            menu->addChild(groupIcon);
+        }
+        
         m_mainLayer->addChild(menu);
         
         CCSpriteFrameCache::sharedSpriteFrameCache()->removeSpriteFramesFromFile("GauntletSheet.plist");
@@ -956,7 +946,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
     {
         if (textFromArea().find("2.21") != std::string::npos) return; //note, 2.21
         
-        CCMenu* originalMenu = getChildOfType<CCMenu>(m_mainLayer, 0);
+        CCMenu* originalMenu = as<CCMenu*>(m_mainLayer->getChildByID("button-menu"));
         CCSprite* icon = CCSprite::createWithSpriteFrameName("GJ_lock_001.png");
         icon->setID("completionIcon");
         icon->setScale(0.6f);
@@ -976,7 +966,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
     {
         if (!trueIsItemUnlocked(iconId, unlockType)) return;
         
-        CCMenu* originalMenu = getChildOfType<CCMenu>(m_mainLayer, 0);
+        CCMenu* originalMenu = as<CCMenu*>(m_mainLayer->getChildByID("button-menu"));
         auto spr = CircleButtonSprite::create(CCLabelBMFont::create("Use", "bigFont.fnt"));
         auto equipButton = CCMenuItemSpriteExtra::create(spr, this, menu_selector(MyItemInfoPopup::onEquipButtonClick));
         equipButton->setID("equipButton");
@@ -991,12 +981,9 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         ));
         
         //for unlocked spinoff games icons
-        for (const char* name : { "gj_subzeroLogo_001.png", "gj_worldLogo_001.png", "GJ_md_001.png" })
-        {
-            auto spinoff = getChildBySpriteFrameName(m_mainLayer, name);
-            if (spinoff != nullptr)
-                equipButton->setPositionY(equipButton->getPositionY() - spinoff->getContentHeight() * 0.4f - 5);
-        }
+        auto spinoff = m_mainLayer->getChildByID("spinoff-logo");
+        if (spinoff != nullptr)
+            equipButton->setPositionY(equipButton->getPositionY() - spinoff->getContentHeight() * 0.4f - 5);
         
         equipButton->setUserObject(new BetterUnlockInfo_Params(iconId, unlockType));
         originalMenu->addChild(equipButton);
@@ -1004,17 +991,17 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
     
     void onEquipButtonClick(CCObject* sender) 
     {
-        auto parameters = static_cast<BetterUnlockInfo_Params*>(static_cast<CCNode*>(sender)->getUserObject());     
+        auto parameters = as<BetterUnlockInfo_Params*>(as<CCNode*>(sender)->getUserObject());     
         auto GM = GameManager::sharedState();      
         
         //note save it idk
-        switch (static_cast<int>(parameters->m_UnlockType))
+        switch (as<int>(parameters->m_UnlockType))
         {
         case 1: GM->setPlayerFrame(parameters->m_IconId); break;
         case 2: GM->setPlayerColor(parameters->m_IconId); break;
         case 3:
         {   
-            auto button = getChildOfType<ItemInfoPopup>(CCScene::get(), 0)->m_mainLayer->getChildByID("button-color-menu")->getChildByTag(1);
+            auto button = CCScene::get()->getChildByType<ItemInfoPopup>(0)->m_mainLayer->getChildByID("button-color-menu")->getChildByTag(1);
             if (button->getID() == "color3")
                 GM->setPlayerColor3(parameters->m_IconId);
             else
@@ -1039,7 +1026,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         if (!Mod::get()->setSavedValue("shown-equip-restart-popup", true))
             FLAlertLayer::create("Note", "By equiping icon this way it won't update on your profile until you restart the game", "OK")->show();
         
-        if (getChildOfType<geode::Notification>(CCScene::get(), 0) == nullptr)
+        if (CCScene::get()->getChildByType<geode::Notification>(0) == nullptr)
             geode::Notification::create("Equipped", CCSprite::createWithSpriteFrameName("GJ_completesIcon_001.png"))->show();
     }
     
@@ -1054,7 +1041,6 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
     
     IconType UnlockToIcon(UnlockType unlockType)
     {
-        
         switch (unlockType)
         {
         case UnlockType::Cube: return IconType::Cube;
@@ -1078,22 +1064,21 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
     
     void moveCredit()
     {
-        for (auto button : CCArrayExt<CCMenuItemSpriteExtra*>(getChildOfType<CCMenu>(m_mainLayer, 0)->getChildren()))
-            if (typeinfo_cast<CCLabelBMFont*>(button->getChildByTag(1)) != nullptr)
-            {
-                if (button->getID()[0] == 'c')
-                {
-                    button->removeFromParent(); //sorry cvolton
-                    continue;
-                }
-                button->setPosition(CCPoint(0, 173));
-                button->m_baseScale = 0.8f;
-                button->setScale(0.8f);
-                
-                //update icon
-                auto icon = getChildOfType<GJItemIcon>(m_mainLayer, 0);
-                icon->setScale(1.1f);
-                icon->setPositionY(icon->getPositionY() - 6);
-            }
+        auto buttonMenu = m_mainLayer->getChildByID("button-menu");
+        
+        auto cvoltonButton = buttonMenu->getChildByID("cvolton.betterinfo/chest-reveal-button");
+        if (cvoltonButton != nullptr)
+            cvoltonButton->removeFromParent();
+        
+        auto authorButton = as<CCMenuItemSpriteExtra*>(buttonMenu->getChildByID("author-button"));
+        if (authorButton == nullptr) return;
+        
+        authorButton->setPosition(CCPoint(0, 173));
+        authorButton->m_baseScale = 0.8f;
+        authorButton->setScale(0.8f);
+        
+        auto icon = m_mainLayer->getChildByID("item-icon");
+        icon->setScale(1.1f);
+        icon->setPositionY(icon->getPositionY() - 6);
     }
 };

@@ -1,3 +1,8 @@
+# 1.2.0
+ - Updated to 2.2074 (finally)
+ - Added support for new gauntlets
+ - Added colored progress bars
+ 
 # v1.1.7
  - Fixed a crash when "Hide Toggle Your Colors" was enabled
 

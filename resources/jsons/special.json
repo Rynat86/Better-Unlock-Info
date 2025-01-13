@@ -2,152 +2,180 @@
     {
         "UnlockType":1, "chests":
         [
-            {"ChestId":"g_9", "UnlockType":1, "IconId":138},
-            {"ChestId":"g_10", "UnlockType":1, "IconId":139},
-            {"ChestId":"g_12", "UnlockType":1, "IconId":141},
-            {"ChestId":"g_13", "UnlockType":1, "IconId":142},
-            {"ChestId":"g_17", "UnlockType":1, "IconId":312},
-            {"ChestId":"g_19", "UnlockType":1, "IconId":315},
-            {"ChestId":"g_22", "UnlockType":1, "IconId":476},
-            {"ChestId":"g_23", "UnlockType":1, "IconId":467},
-            {"ChestId":"g_28", "UnlockType":1, "IconId":436},
-            {"ChestId":"g_29", "UnlockType":1, "IconId":326},
-            {"ChestId":"g_30", "UnlockType":1, "IconId":316},
-            {"ChestId":"g_33", "UnlockType":1, "IconId":397},
-            {"ChestId":"g_34", "UnlockType":1, "IconId":244},
-            {"ChestId":"g_39", "UnlockType":1, "IconId":303},
-            {"ChestId":"g_41", "UnlockType":1, "IconId":425},
-            {"ChestId":"g_42", "UnlockType":1, "IconId":377},
-            {"ChestId":"g_43", "UnlockType":1, "IconId":408},
-            {"ChestId":"g_44", "UnlockType":1, "IconId":453},
-            {"ChestId":"g_49", "UnlockType":1, "IconId":482},
-            {"ChestId":"g_51", "UnlockType":1, "IconId":452},
-            {"ChestId":1, "UnlockType":1, "IconId":103},
-            {"ChestId":2, "UnlockType":1, "IconId":106},
-            {"ChestId":5, "UnlockType":1, "IconId":104},
-            {"ChestId":7, "UnlockType":1, "IconId":111},
-            {"ChestId":10, "UnlockType":1, "IconId":149},
-            {"ChestId":11, "UnlockType":1, "IconId":150},
-            {"ChestId":24, "UnlockType":1, "IconId":483},
-            {"ChestId":12, "UnlockType":1, "IconId":151},
-            {"ChestId":15, "UnlockType":1, "IconId":152},
-            {"ChestId":20, "UnlockType":1, "IconId":153},
-            {"ChestId":22, "UnlockType":1, "IconId":154},
-            {"ChestId":23, "UnlockType":1, "IconId":160},
-            {"ChestId":"pr_8", "UnlockType":1, "IconId":359}
+            {"ChestId":"g_9","IconId":138},
+            {"ChestId":"g_10","IconId":139},
+            {"ChestId":"g_12","IconId":141},
+            {"ChestId":"g_13","IconId":142},
+            {"ChestId":"g_17","IconId":312},
+            {"ChestId":"g_19","IconId":315},
+            {"ChestId":"g_22","IconId":476},
+            {"ChestId":"g_23","IconId":467},
+            {"ChestId":"g_28","IconId":436},
+            {"ChestId":"g_29","IconId":326},
+            {"ChestId":"g_30","IconId":316},
+            {"ChestId":"g_33","IconId":397},
+            {"ChestId":"g_34","IconId":244},
+            {"ChestId":"g_39","IconId":303},
+            {"ChestId":"g_41","IconId":425},
+            {"ChestId":"g_42","IconId":377},
+            {"ChestId":"g_43","IconId":408},
+            {"ChestId":"g_44","IconId":453},
+            {"ChestId":"g_49","IconId":482},
+            {"ChestId":"g_51","IconId":452},
+            {"ChestId":"0001","IconId":103},
+            {"ChestId":"0002","IconId":106},
+            {"ChestId":"0005","IconId":104},
+            {"ChestId":"0007","IconId":111},
+            {"ChestId":"0010","IconId":149},
+            {"ChestId":"0011","IconId":150},
+            {"ChestId":"0024","IconId":483},
+            {"ChestId":"0012","IconId":151},
+            {"ChestId":"0015","IconId":152},
+            {"ChestId":"0020","IconId":153},
+            {"ChestId":"0022","IconId":154},
+            {"ChestId":"0023","IconId":160},
+            {"ChestId":"pr_8","IconId":359},
+            {"ChestId":"w_1","IconId":210,"Code":"[Will be added in a future update of this mod]"},
+            {"ChestId":"w_2","IconId":231,"Code":"citadel"},
+            {"ChestId":"w_3","IconId":309,"Code":"[Will be added in a future update of this mod]"},
+            {"ChestId":"w_4","IconId":343,"Code":"[Will be added in a future update of this mod]"},
+            {"ChestId":"w_5","IconId":390,"Code":"[Will be added in a future update of this mod]"},
+            {"ChestId":"w_6","IconId":409,"Code":"backondash"},
+            {"ChestId":"w_7","IconId":440,"Code":"[Will be added in a future update of this mod]"},
+            {"ChestId":"w_8","IconId":445,"Code":"[Will be added in a future update of this mod]"},
+            {"ChestId":"w_9","IconId":485,"Code":"[Will be added in a future update of this mod]"}
         ]
     },
     {
         "UnlockType":2, "chests":
         [
-            {"ChestId":16, "UnlockType":2, "IconId":85},
-            {"ChestId":19, "UnlockType":2, "IconId":92},
-            {"ChestId":"pr_2", "UnlockType":2, "IconId":83},
-            {"ChestId":"pr_4", "UnlockType":2, "IconId":104},
-            {"ChestId":"pr_6", "UnlockType":2, "IconId":61},
-            {"ChestId":"pr_10", "UnlockType":2, "IconId":76}
+            {"ChestId":"0016","IconId":85},
+            {"ChestId":"0019","IconId":92},
+            {"ChestId":"pr_2","IconId":83},
+            {"ChestId":"pr_4","IconId":104},
+            {"ChestId":"pr_6","IconId":61},
+            {"ChestId":"pr_10","IconId":76}
         ]
     },
     {
         "UnlockType":3, "chests":
         [
-            {"ChestId":"g_1", "UnlockType":3, "IconId":30},
-            {"ChestId":"g_2", "UnlockType":3, "IconId":35},
-            {"ChestId":"g_3", "UnlockType":3, "IconId":34},
-            {"ChestId":"g_4", "UnlockType":3, "IconId":36},
-            {"ChestId":"g_5", "UnlockType":3, "IconId":29},
-            {"ChestId":"g_6", "UnlockType":3, "IconId":37},
-            {"ChestId":13, "UnlockType":3, "IconId":52},
-            {"ChestId":"pr_8", "UnlockType":3, "IconId":102}
+            {"ChestId":"g_1","IconId":30},
+            {"ChestId":"g_2","IconId":35},
+            {"ChestId":"g_3","IconId":34},
+            {"ChestId":"g_4","IconId":36},
+            {"ChestId":"g_5","IconId":29},
+            {"ChestId":"g_6","IconId":37},
+            {"ChestId":"0013","IconId":52},
+            {"ChestId":"pr_8","IconId":102}
         ]
     },
     {
         "UnlockType":4, "chests":
         [
-            {"ChestId":"g_15", "UnlockType":4, "IconId":49},
-            {"ChestId":"g_20", "UnlockType":4, "IconId":96},
-            {"ChestId":"g_27", "UnlockType":4, "IconId":142},
-            {"ChestId":"g_40", "UnlockType":4, "IconId":166},
-            {"ChestId":"g_50", "UnlockType":4, "IconId":90},
-            {"ChestId":"g_52", "UnlockType":4, "IconId":117},
-            {"ChestId":8, "UnlockType":4, "IconId":50},
-            {"ChestId":14, "UnlockType":4, "IconId":52},
-            {"ChestId":21, "UnlockType":4, "IconId":53},
-            {"ChestId":"pr_5", "UnlockType":4, "IconId":94},
-            {"ChestId":"pr_6", "UnlockType":4, "IconId":91},
-            {"ChestId":"pr_7", "UnlockType":4, "IconId":98}
+            {"ChestId":"g_15","IconId":49},
+            {"ChestId":"g_20","IconId":96},
+            {"ChestId":"g_27","IconId":142},
+            {"ChestId":"g_40","IconId":166},
+            {"ChestId":"g_50","IconId":90},
+            {"ChestId":"g_52","IconId":117},
+            {"ChestId":"0008","IconId":50},
+            {"ChestId":"0014","IconId":52},
+            {"ChestId":"0021","IconId":53},
+            {"ChestId":"pr_5","IconId":94},
+            {"ChestId":"pr_6","IconId":91},
+            {"ChestId":"pr_7","IconId":98},
+            {"ChestId":"w_10","IconId":121,"Code":"retrospective"},
+            {"ChestId":"w_11","IconId":146,"Code":"duckstep"},
+            {"ChestId":"w_12","IconId":155,"Code":"[Will be added in a future update of this mod]"},
+            {"ChestId":"w_13","IconId":158,"Code":"[Will be added in a future update of this mod]"}
         ]
     },
     {
         "UnlockType":5, "chests":
         [
-            {"ChestId":"g_11", "UnlockType":5, "IconId":43},
-            {"ChestId":"g_16", "UnlockType":5, "IconId":67},
-            {"ChestId":"g_46", "UnlockType":5, "IconId":103},
-            {"ChestId":"g_48", "UnlockType":5, "IconId":82},
-            {"ChestId":4, "UnlockType":5, "IconId":23},
-            {"ChestId":9, "UnlockType":5, "IconId":41},
-            {"ChestId":18, "UnlockType":5, "IconId":44}
+            {"ChestId":"g_11","IconId":43},
+            {"ChestId":"g_16","IconId":67},
+            {"ChestId":"g_46","IconId":103},
+            {"ChestId":"g_48","IconId":82},
+            {"ChestId":"0004","IconId":23},
+            {"ChestId":"0009","IconId":41},
+            {"ChestId":"0018","IconId":44},
+            {"ChestId":"w_14","IconId":63,"Code":"[Will be added in a future update of this mod]"},
+            {"ChestId":"w_15","IconId":90,"Code":"geometry"},
+            {"ChestId":"w_16","IconId":91,"Code":"ruins"},
+            {"ChestId":"w_17","IconId":114,"Code":"[Will be added in a future update of this mod]"}
         ]
     },
     {
         "UnlockType":6, "chests":
         [
-            {"ChestId":"g_21", "UnlockType":6, "IconId":137},
-            {"ChestId":"g_47", "UnlockType":6, "IconId":119},
-            {"ChestId":6, "UnlockType":6, "IconId":27},
-            {"ChestId":17, "UnlockType":6, "IconId":36},
-            {"ChestId":"pr_3", "UnlockType":6, "IconId":146}
+            {"ChestId":"g_21","IconId":137},
+            {"ChestId":"g_47","IconId":119},
+            {"ChestId":"g_53","IconId":133},
+            {"ChestId":"0006","IconId":27},
+            {"ChestId":"0017","IconId":36},
+            {"ChestId":"pr_3","IconId":146},
+            {"ChestId":"w_18","IconId":63,"Code":"[Will be added in a future update of this mod]"},
+            {"ChestId":"w_19","IconId":116,"Code":"[Will be added in a future update of this mod]"},
+            {"ChestId":"w_20","IconId":138,"Code":"cheatcodes"},
+            {"ChestId":"w_21","IconId":147,"Code":"[Will be added in a future update of this mod]"}
         ]
     },
     {
         "UnlockType":7, "chests":
         [
-            {"ChestId":"g_26", "UnlockType":7, "IconId":94},
-            {"ChestId":"g_37", "UnlockType":7, "IconId":90},
-            {"ChestId":"g_38", "UnlockType":7, "IconId":63},
-            {"ChestId":"g_45", "UnlockType":7, "IconId":49}
+            {"ChestId":"g_26","IconId":94},
+            {"ChestId":"g_37","IconId":90},
+            {"ChestId":"g_38","IconId":63},
+            {"ChestId":"g_45","IconId":49},
+            {"ChestId":"w_22","IconId":44,"Code":"[Will be added in a future update of this mod]"},
+            {"ChestId":"w_23","IconId":55,"Code":"[Will be added in a future update of this mod]"},
+            {"ChestId":"w_24","IconId":83,"Code":"[Will be added in a future update of this mod]"},
+            {"ChestId":"w_25","IconId":92,"Code":"[Will be added in a future update of this mod]"}
         ]
     },
     {
         "UnlockType":8, "chests":
         [
-            {"ChestId":"g_7", "UnlockType":8, "IconId":16},
-            {"ChestId":"pr_2", "UnlockType":8, "IconId":48},
-            {"ChestId":"pr_4", "UnlockType":8, "IconId":40},
-            {"ChestId":"pr_9", "UnlockType":8, "IconId":66}
+            {"ChestId":"g_7","IconId":16},
+            {"ChestId":"pr_2","IconId":48},
+            {"ChestId":"pr_4","IconId":40},
+            {"ChestId":"pr_9","IconId":66},
+            {"ChestId":"w_26","IconId":37,"Code":"backstreetboy"}
         ]
     },
     {
         "UnlockType":9, "chests":
         [
-            {"ChestId":"g_8", "UnlockType":9, "IconId":10},
-            {"ChestId":"g_32", "UnlockType":9, "IconId":67}
+            {"ChestId":"g_8","IconId":10},
+            {"ChestId":"g_32","IconId":67},
+            {"ChestId":"w_27","IconId":40,"Code":"[Will be added in a future update of this mod]"}
         ]
     },
     {
         "UnlockType":11, "chests":
         [
-            {"ChestId":"g_14", "UnlockType":11, "IconId":17},
-            {"ChestId":2, "UnlockType":11, "IconId":12}
-        ]
-    },
-    {
-        "UnlockType":12, "chests":
-        [
-            {"ChestId":"g_7", "UnlockType":12, "IconId":1},
-            {"ChestId":2, "UnlockType":12, "IconId":5},
-            {"ChestId":3, "UnlockType":12, "IconId":3},
-            {"ChestId":4, "UnlockType":12, "IconId":2}
+            {"ChestId":"g_14","IconId":17},
+            {"ChestId":"0002","IconId":12}
         ]
     },
     {
         "UnlockType":13, "chests":
         [
-            {"ChestId":"g_35", "UnlockType":13, "IconId":16},
-            {"ChestId":"g_36", "UnlockType":13, "IconId":31},
-            {"ChestId":"pr_1", "UnlockType":13, "IconId":19},
-            {"ChestId":"pr_10", "UnlockType":13, "IconId":36}
+            {"ChestId":"g_35","IconId":16},
+            {"ChestId":"g_36","IconId":31},
+            {"ChestId":"pr_1","IconId":19},
+            {"ChestId":"pr_10","IconId":36},
+            {"ChestId":"w_28","IconId":17,"Code":"noelelectra"}
+        ]
+    },
+    {
+        "UnlockType":14, "chests":
+        [
+            {"ChestId":"g_54","IconId":7},
+            {"ChestId":"w_29","IconId":6,"Code":"[Will be added in a future update of this mod]"},
+            {"ChestId":"w_30","IconId":8,"Code":"[Will be added in a future update of this mod]"}
         ]
     }
 ]
