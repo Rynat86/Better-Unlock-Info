@@ -83,9 +83,6 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
     //user colors checkbox
     void addUseMyColorsCheckBox()
     {
-        if (Loader::get()->isModLoaded("gdutilsdevs.gdutils") && CCScene::get()->getChildByType<GJGarageLayer>(0) != nullptr)
-            return;
-        
         //adds menu
         auto menu = CCMenu::create();
         menu->setID("checkbox-menu");
@@ -124,7 +121,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         }
         
         auto GM = GameManager::get();
-        auto icon = m_mainLayer->getChildByType<GJItemIcon>(0)->getChildByType<SimplePlayer>(0);
+        auto icon = m_mainLayer->getChildByID("item-icon")->getChildByType<SimplePlayer>(0);
         auto profile = m_fields->profileList.back();
         
         icon->setColor(GM->colorForIdx(profile->m_score->m_color1));
@@ -153,7 +150,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
                                     icon = gjicon->getChildByType<SimplePlayer>(0);
         
         if (icon == nullptr)
-            icon = as<GJItemIcon*>(m_mainLayer->getChildByID("item-icon"))->getChildByType<SimplePlayer>(0);
+            icon = m_mainLayer->getChildByID("item-icon")->getChildByType<SimplePlayer>(0);
         
         icon->setColor(ccColor3B(175,175,175));
         icon->setSecondColor(ccColor3B(255,255,255));
@@ -758,18 +755,48 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         
         if(labelText.find("buy") != std::string::npos)
         {
-            achiobj->sprite = "currencyOrbIcon_001.png";
             achiobj->scale = 0.7f;
+            achiobj->sprite = "currencyOrbIcon_001.png";
+            
+            std::ifstream file(Mod::get()->getResourcesDir() / "shops.json");
+            matjson::Value json = matjson::parse(file).unwrap();
+            for (auto list : json)
+                if (list["UnlockType"].asInt().unwrap() == as<int>(unlockType))
+                    for (auto item : list["items"])
+                        if (item["IconId"].asInt().unwrap() == iconId)
+                            if (item["ShopType"].asInt().unwrap() == 4)
+                                achiobj->sprite = "currencyDiamondIcon_001.png";
         }
         else if (labelText.find("secret chest") != std::string::npos)
         {
-            achiobj->sprite = "chest_03_02_001.png";
             achiobj->scale = 0.15f;
+            achiobj->sprite = "chest_03_02_001.png";
+            
+            std::ifstream file(Mod::get()->getResourcesDir() / "chests.json");
+            matjson::Value json = matjson::parse(file).unwrap();
+            for (auto list : json)
+                if (list["UnlockType"].asInt().unwrap() == as<int>(unlockType))
+                    for (auto item : list["chests"])
+                        if (item["IconId"].asInt().unwrap() == iconId)
+                            achiobj->sprite = "chest_0" + std::to_string(item["GJRewardType"].asInt().unwrap()) + "_02_001.png";
         }
         else if (labelText.find("special chest") != std::string::npos)
         {
-            achiobj->sprite = "chest_02_02_001.png";
             achiobj->scale = 0.15f;
+            achiobj->sprite = "chest_02_02_001.png";
+            
+            std::ifstream file(Mod::get()->getResourcesDir() / "special.json");
+            matjson::Value json = matjson::parse(file).unwrap();
+            
+            for (auto list : json)
+                if (list["UnlockType"].asInt().unwrap() == as<int>(unlockType))
+                    for (auto item : list["chests"])
+                        if (item["IconId"].asInt().unwrap() == iconId)
+                            if ((item["ChestId"].asString().unwrap())[0] == 'w')
+                            {
+                                CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile("SecretSheet.plist", "SecretSheet.png");
+                                achiobj->sprite = "GJ_secretLock4_001.png";
+                            }
         }
         else
         {
@@ -859,7 +886,8 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         slider->removeChild(slider->m_touchLogic);
         slider->setID("completionSlider");
         slider->setScale(0.45f);
-        slider->setPosition(CCPoint(-77, -173));
+        slider->setAnchorPoint(CCPoint(0,0));
+        slider->setPosition(CCPoint(81, -85));
         slider->setValue(as<float>(achiobj->currentValue) / as<float>(achiobj->maxValue));
         menu->addChild(slider);
         
@@ -927,7 +955,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         {
             if (achiobj->achiShort == "gauntlets")
                 CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile("GauntletSheet.plist", "GauntletSheet.png");
-                
+            
             CCSprite* groupIcon = CCSprite::createWithSpriteFrameName(achiobj->sprite.c_str());
             if (achiobj->sprite[0] == '_') groupIcon = CCSprite::createWithSpriteFrameName(fmt::format("{}/{}", Mod::get()->getID(), achiobj->sprite).c_str());
             else if (achiobj->sprite == "GJ_downloadsIcon_001.png") groupIcon->setRotation(180);
@@ -940,6 +968,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         m_mainLayer->addChild(menu);
         
         CCSpriteFrameCache::sharedSpriteFrameCache()->removeSpriteFramesFromFile("GauntletSheet.plist");
+        CCSpriteFrameCache::sharedSpriteFrameCache()->removeSpriteFramesFromFile("SecretSheet.plist");
     }
     
     void addCompletionIconOnly(int iconId, UnlockType unlockType)

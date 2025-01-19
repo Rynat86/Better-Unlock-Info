@@ -1,11 +1,11 @@
 {
-    "geode":"4.1.2",
+    "geode":"4.2.0",
     "gd":
     {
         "win": "2.2074",
         "android": "2.2074"
     },
-    "version":"v1.2.0",
+    "version":"v1.3.0",
     "id":"rynat.better_unlock_info",
     "name":"Better Unlock Info",
     "developer":"Rynat",
@@ -14,14 +14,12 @@
         "source": "https://github.com/Rynat86/Better-Unlock-Info"
     },
     "tags": ["enhancement", "interface", "utility"],
-    "dependencies":
-    [
-        {
-            "id": "geode.node-ids",
-            "version": ">=v1.18.0",
+    "dependencies": {
+        "geode.node-ids": {
+            "version": ">=1.19.0",
             "importance": "required"
         }
-    ],
+    },
     "settings":
     {
         "jetpackToggle":

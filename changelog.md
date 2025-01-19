@@ -1,3 +1,7 @@
+# 1.3.0
+ - Added different chest icons for icons from secret chests
+ - Fixed progress bar being misaligned on non 16:9 aspect ratios
+
 # 1.2.0
  - Updated to 2.2074 (finally)
  - Added support for new gauntlets
