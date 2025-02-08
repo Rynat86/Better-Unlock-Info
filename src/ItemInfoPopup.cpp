@@ -1,6 +1,7 @@
 #include "Includes.hpp"
 #include <Geode/modify/ItemInfoPopup.hpp>
 #include <matjson.hpp>
+#include <Geode/utils/web.hpp>
 
 
 //replaces grayscale icon with users, adds colors and rest aka lazy to write - in about.md
@@ -174,7 +175,8 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         {
             icon->setColor(GM->colorForIdx(GM->getPlayerColor()));
             icon->setSecondColor(GM->colorForIdx(GM->getPlayerColor2()));
-            if (GM->m_playerGlow) icon->setGlowOutline(GM->colorForIdx(GM->getPlayerGlowColor()));    
+            if (GM->m_playerGlow) icon->setGlowOutline(GM->colorForIdx(GM->getPlayerGlowColor()));
+            else icon->disableGlowOutline();
         }
     }
     
@@ -286,7 +288,6 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         std::string labelText = textFromArea();
 
         auto parameters = as<BetterUnlockInfo_Params*>(as<CCNode*>(sender)->getUserObject());
-        
         
         if (labelText.find("buy") != std::string::npos) 
         {
@@ -445,7 +446,16 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
                             
                             std::string desc = "You can unlock this item ";
                             if (chestType[0] == 'w')
-                                desc += "at <cj>The Wraith</c> by entering the code <cg>" + item["Code"].asString().unwrap() + "</c>";
+                            {
+                                size = 350;
+                                std::string code = item["Code"].asString().unwrap();
+                                if (code == "[This icon is not yet available]")
+                                {
+                                    getWraithCodeOnline(chestType);
+                                    return;
+                                }
+                                desc += "at <cj>The Wraith</c> by entering the code <cg>" + code + "</c>";
+                            }
                             else
                                 desc += std::string(getSpecialChestDesc(chestTypeInt));
                             
@@ -593,6 +603,30 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         case 23: return "by repeatedly opening and closing the <cb>Help Page</c> (you must be logged into an account)"; break;
         default: return "null"; break;
         }
+    }
+    
+    void getWraithCodeOnline(std::string chestId)
+    {
+        web::WebRequest req = web::WebRequest();
+        req.timeout(std::chrono::seconds(3));
+        req.get("https://raw.githubusercontent.com/Rynat86/Better-Unlock-Info/refs/heads/main/resources/jsons/wraith.json").listen(
+        [chestId] (web::WebResponse* res)
+        {
+            std::string desc = "You can unlock this item at <cj>The Wraith</c> by entering the code <cg>";
+            if (!res->ok())
+            {
+                desc += "[Web request error, check if you're connected]</c>";
+                FLAlertLayer::create(nullptr, "Oh no!", desc, "OK", nullptr, 400)->show();
+                return;
+            }
+            
+            matjson::Value json = res->json().unwrap();
+            desc += json[chestId].asString().unwrap() + "</c>";
+            FLAlertLayer::create(nullptr, "Which one? This one!", desc, "OK", nullptr, 350)->show();
+        },
+        [] (auto) { /*request is in progress*/ },
+        [] () { /*request cancelled*/ }
+        );
     }
 
     //progress bar

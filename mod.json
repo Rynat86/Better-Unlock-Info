@@ -10,12 +10,15 @@
     "name":"Better Unlock Info",
     "developer":"Rynat",
     "description":"Shows how to unlock icons on profile and more",
-    "links": {
+    "links":
+    {
         "source": "https://github.com/Rynat86/Better-Unlock-Info"
     },
     "tags": ["enhancement", "interface", "utility"],
-    "dependencies": {
-        "geode.node-ids": {
+    "dependencies":
+    {
+        "geode.node-ids":
+        {
             "version": ">=1.19.0",
             "importance": "required"
         }

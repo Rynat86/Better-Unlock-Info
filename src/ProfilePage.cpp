@@ -126,7 +126,7 @@ class $modify(MyProfilePage, ProfilePage)
     {
         //creates button from icon        
         auto iconPlayer = playerMenu->getChildByID(nodeId)->getChildByType<SimplePlayer>(0);
-        auto iconButton = CCMenuItemSpriteExtra::create(CCSprite::create(), this, menu_selector(MyProfilePage::onIconClick));
+        auto iconButton = CCMenuItemSpriteExtra::create(iconPlayer, this, menu_selector(MyProfilePage::onIconClick));
         
         //swaps with original so its on correct place
         playerMenu->addChild(iconButton);

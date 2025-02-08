@@ -35,15 +35,15 @@
             {"ChestId":"0022","IconId":154},
             {"ChestId":"0023","IconId":160},
             {"ChestId":"pr_8","IconId":359},
-            {"ChestId":"w_1","IconId":210,"Code":"[Will be added in a future update of this mod]"},
+            {"ChestId":"w_1","IconId":210,"Code":"[This icon is not yet available]"},
             {"ChestId":"w_2","IconId":231,"Code":"citadel"},
-            {"ChestId":"w_3","IconId":309,"Code":"[Will be added in a future update of this mod]"},
-            {"ChestId":"w_4","IconId":343,"Code":"[Will be added in a future update of this mod]"},
-            {"ChestId":"w_5","IconId":390,"Code":"[Will be added in a future update of this mod]"},
+            {"ChestId":"w_3","IconId":309,"Code":"skyline pt 2"},
+            {"ChestId":"w_4","IconId":343,"Code":"[This icon is not yet available]"},
+            {"ChestId":"w_5","IconId":390,"Code":"[This icon is not yet available]"},
             {"ChestId":"w_6","IconId":409,"Code":"backondash"},
-            {"ChestId":"w_7","IconId":440,"Code":"[Will be added in a future update of this mod]"},
-            {"ChestId":"w_8","IconId":445,"Code":"[Will be added in a future update of this mod]"},
-            {"ChestId":"w_9","IconId":485,"Code":"[Will be added in a future update of this mod]"}
+            {"ChestId":"w_7","IconId":440,"Code":"[This icon is not yet available]"},
+            {"ChestId":"w_8","IconId":445,"Code":"[This icon is not yet available]"},
+            {"ChestId":"w_9","IconId":485,"Code":"[This icon is not yet available]"}
         ]
     },
     {
@@ -87,8 +87,8 @@
             {"ChestId":"pr_7","IconId":98},
             {"ChestId":"w_10","IconId":121,"Code":"retrospective"},
             {"ChestId":"w_11","IconId":146,"Code":"duckstep"},
-            {"ChestId":"w_12","IconId":155,"Code":"[Will be added in a future update of this mod]"},
-            {"ChestId":"w_13","IconId":158,"Code":"[Will be added in a future update of this mod]"}
+            {"ChestId":"w_12","IconId":155,"Code":"[This icon is not yet available]"},
+            {"ChestId":"w_13","IconId":158,"Code":"[This icon is not yet available]"}
         ]
     },
     {
@@ -101,10 +101,10 @@
             {"ChestId":"0004","IconId":23},
             {"ChestId":"0009","IconId":41},
             {"ChestId":"0018","IconId":44},
-            {"ChestId":"w_14","IconId":63,"Code":"[Will be added in a future update of this mod]"},
+            {"ChestId":"w_14","IconId":63,"Code":"[This icon is not yet available]"},
             {"ChestId":"w_15","IconId":90,"Code":"geometry"},
             {"ChestId":"w_16","IconId":91,"Code":"ruins"},
-            {"ChestId":"w_17","IconId":114,"Code":"[Will be added in a future update of this mod]"}
+            {"ChestId":"w_17","IconId":114,"Code":"[This icon is not yet available]"}
         ]
     },
     {
@@ -116,10 +116,10 @@
             {"ChestId":"0006","IconId":27},
             {"ChestId":"0017","IconId":36},
             {"ChestId":"pr_3","IconId":146},
-            {"ChestId":"w_18","IconId":63,"Code":"[Will be added in a future update of this mod]"},
-            {"ChestId":"w_19","IconId":116,"Code":"[Will be added in a future update of this mod]"},
+            {"ChestId":"w_18","IconId":63,"Code":"[This icon is not yet available]"},
+            {"ChestId":"w_19","IconId":116,"Code":"[This icon is not yet available]"},
             {"ChestId":"w_20","IconId":138,"Code":"cheatcodes"},
-            {"ChestId":"w_21","IconId":147,"Code":"[Will be added in a future update of this mod]"}
+            {"ChestId":"w_21","IconId":147,"Code":"[This icon is not yet available]"}
         ]
     },
     {
@@ -129,10 +129,10 @@
             {"ChestId":"g_37","IconId":90},
             {"ChestId":"g_38","IconId":63},
             {"ChestId":"g_45","IconId":49},
-            {"ChestId":"w_22","IconId":44,"Code":"[Will be added in a future update of this mod]"},
-            {"ChestId":"w_23","IconId":55,"Code":"[Will be added in a future update of this mod]"},
-            {"ChestId":"w_24","IconId":83,"Code":"[Will be added in a future update of this mod]"},
-            {"ChestId":"w_25","IconId":92,"Code":"[Will be added in a future update of this mod]"}
+            {"ChestId":"w_22","IconId":44,"Code":"[This icon is not yet available]"},
+            {"ChestId":"w_23","IconId":55,"Code":"[This icon is not yet available]"},
+            {"ChestId":"w_24","IconId":83,"Code":"[This icon is not yet available]"},
+            {"ChestId":"w_25","IconId":92,"Code":"boogie"}
         ]
     },
     {
@@ -150,7 +150,7 @@
         [
             {"ChestId":"g_8","IconId":10},
             {"ChestId":"g_32","IconId":67},
-            {"ChestId":"w_27","IconId":40,"Code":"[Will be added in a future update of this mod]"}
+            {"ChestId":"w_27","IconId":40,"Code":"[This icon is not yet available]"}
         ]
     },
     {
@@ -174,8 +174,8 @@
         "UnlockType":14, "chests":
         [
             {"ChestId":"g_54","IconId":7},
-            {"ChestId":"w_29","IconId":6,"Code":"[Will be added in a future update of this mod]"},
-            {"ChestId":"w_30","IconId":8,"Code":"[Will be added in a future update of this mod]"}
+            {"ChestId":"w_29","IconId":6,"Code":"[This icon is not yet available]"},
+            {"ChestId":"w_30","IconId":8,"Code":"[This icon is not yet available]"}
         ]
     }
 ]

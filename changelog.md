@@ -1,6 +1,8 @@
 # 1.3.0
  - Added different chest icons for icons from secret chests
+ - Made Wraith codes *automatically* update
  - Fixed progress bar being misaligned on non 16:9 aspect ratios
+ - Fixed glow being persistent on icon after using "use my colors" when not having glow enabled
 
 # 1.2.0
  - Updated to 2.2074 (finally)
