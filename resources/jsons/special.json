@@ -43,10 +43,10 @@
             {"ChestId":"w_6","IconId":409,"Code":"backondash"},
             {"ChestId":"w_7","IconId":440,"Code":"[This icon is not yet available]"},
             {"ChestId":"w_8","IconId":445,"Code":"[This icon is not yet available]"},
-            {"ChestId":"w_9","IconId":485,"Code":"[This icon is not yet available]"}
+            {"ChestId":"w_9","IconId":485,"Code":"gd awards"}
         ]
     },
-    {
+    { 
         "UnlockType":2, "chests":
         [
             {"ChestId":"0016","IconId":85},
