@@ -175,7 +175,7 @@
         [
             {"ChestId":"g_54","IconId":7},
             {"ChestId":"w_29","IconId":6,"Code":"[This icon is not yet available]"},
-            {"ChestId":"w_30","IconId":8,"Code":"[This icon is not yet available]"}
+            {"ChestId":"w_30","IconId":8,"Code":"ncs album"}
         ]
     }
 ]
