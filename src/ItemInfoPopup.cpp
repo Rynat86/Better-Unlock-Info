@@ -153,8 +153,8 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         if (icon == nullptr)
             icon = m_mainLayer->getChildByID("item-icon")->getChildByType<SimplePlayer>(0);
         
-        icon->setColor(ccColor3B(175,175,175));
-        icon->setSecondColor(ccColor3B(255,255,255));
+        icon->setColor(ccColor3B{175,175,175});
+        icon->setSecondColor(ccColor3B{255,255,255});
         icon->disableGlowOutline();
         
         
@@ -389,7 +389,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
             subCount->setScale(0.6f);
             subCount->setAnchorPoint(CCPoint(1, 0.5f));
             subCount->setPosition(CCPoint(screenSize.width - 35, screenSize.height - 15 - 20));
-            subCount->setColor(ccColor3B(0xFF, 0x37, 0x37));
+            subCount->setColor(ccColor3B{0xFF, 0x37, 0x37});
             
             CCLabelBMFont* afterCount = CCLabelBMFont::create(std::to_string(currentOrbs-price).c_str(), "bigFont.fnt");
             afterCount->setID("afterCount");
@@ -679,11 +679,11 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         achiobj.sprite = achitypes[achiobj.achiShort]["Sprite"].asString().unwrap();
         achiobj.scale = achitypes[achiobj.achiShort]["Scale"].asDouble().unwrap();
         achiobj.moveY = achitypes[achiobj.achiShort]["MoveY"].asDouble().unwrap();
-        achiobj.color = ccColor3B(
-            achitypes[achiobj.achiShort]["Color"]["R"].asInt().unwrap(),
-            achitypes[achiobj.achiShort]["Color"]["G"].asInt().unwrap(),
-            achitypes[achiobj.achiShort]["Color"]["B"].asInt().unwrap()
-        );
+        achiobj.color = ccColor3B{
+            (uint8_t)achitypes[achiobj.achiShort]["Color"]["R"].asInt().unwrap(),
+            (uint8_t)achitypes[achiobj.achiShort]["Color"]["G"].asInt().unwrap(),
+            (uint8_t)achitypes[achiobj.achiShort]["Color"]["B"].asInt().unwrap()
+        };
                 
         getCompletionProgressData(iconId, unlockType, &achiobj);
         
@@ -892,11 +892,11 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
                 achiobj->sprite = achitypes[path]["Sprite"].asString().unwrap();
                 achiobj->scale = achitypes[path]["Scale"].asDouble().unwrap();
                 achiobj->moveY = achitypes[path]["MoveY"].asDouble().unwrap();
-                achiobj->color = ccColor3B(
-                    achitypes[path]["Color"]["R"].asInt().unwrap(),
-                    achitypes[path]["Color"]["G"].asInt().unwrap(),
-                    achitypes[path]["Color"]["B"].asInt().unwrap()
-                );
+                achiobj->color = ccColor3B{
+                    (uint8_t)achitypes[path]["Color"]["R"].asInt().unwrap(),
+                    (uint8_t)achitypes[path]["Color"]["G"].asInt().unwrap(),
+                    (uint8_t)achitypes[path]["Color"]["B"].asInt().unwrap()
+                };
             }
         }
     }
