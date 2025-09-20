@@ -152,7 +152,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         
         if (icon == nullptr)
             icon = m_mainLayer->getChildByID("item-icon")->getChildByType<SimplePlayer>(0);
-
+        
         icon->setColor(ccColor3B(175,175,175));
         icon->setSecondColor(ccColor3B(255,255,255));
         icon->disableGlowOutline();
