@@ -1,3 +1,6 @@
+# 1.3.1
+ - Updated to 2.2081
+
 # 1.3.0
  - Added different chest icons for icons from secret chests
  - Made Wraith codes *automatically* update

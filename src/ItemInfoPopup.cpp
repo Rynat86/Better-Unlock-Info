@@ -1,4 +1,5 @@
 #include "Includes.hpp"
+#include "IconInfo.hpp"
 #include <Geode/modify/ItemInfoPopup.hpp>
 #include <matjson.hpp>
 #include <Geode/utils/web.hpp>
@@ -10,6 +11,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
     struct Fields
     {
         std::vector<ProfilePage*> profileList;
+        async::TaskHolder<web::WebResponse> listener;
     };
     
     
@@ -38,7 +40,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         
         //if this is unlock, dont add colors related stuff
         int badUnlocks[] = {2, 3, 10, 11, 12, 15};
-        bool isBad = std::find(std::begin(badUnlocks), std::end(badUnlocks), as<int>(UnlockType)) != std::end(badUnlocks);
+        bool isBad = std::find(std::begin(badUnlocks), std::end(badUnlocks), static_cast<int>(UnlockType)) != std::end(badUnlocks);
         if (isBad)
         {
             //is bad but add equip on profile
@@ -63,7 +65,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         m_fields->profileList.clear();
         for (auto node : CCArrayExt<CCNode*>(CCScene::get()->getChildren()))
             if (typeinfo_cast<ProfilePage*>(node) != nullptr)
-                m_fields->profileList.push_back(as<ProfilePage*>(node));
+                m_fields->profileList.push_back(static_cast<ProfilePage*>(node));
 
         updateIconColorsOnProfile();
         addColors();
@@ -74,7 +76,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         //fix android touch - thx devtools :yep:
         if (auto delegate = typeinfo_cast<CCTouchDelegate*>(m_fields->profileList.back()))
             if (auto handler = CCTouchDispatcher::get()->findHandler(delegate))
-                if (auto delegate2 = typeinfo_cast<CCTouchDelegate*>(as<CCMenu*>(m_fields->profileList.back()->m_mainLayer->getChildByID("player-menu"))))
+                if (auto delegate2 = typeinfo_cast<CCTouchDelegate*>(static_cast<CCMenu*>(m_fields->profileList.back()->m_mainLayer->getChildByID("player-menu"))))
                     if (auto handler2 = CCTouchDispatcher::get()->findHandler(delegate2))
                         CCTouchDispatcher::get()->setPriority(handler->getPriority()-1, handler2->getDelegate());
         
@@ -159,7 +161,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         
         
         auto GM = GameManager::get();
-        auto checkbox = as<CCMenuItemToggler*>(sender);
+        auto checkbox = static_cast<CCMenuItemToggler*>(sender);
         
         //profile check
         if (checkbox->getUserObject() != nullptr)
@@ -184,7 +186,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
     void addColors()
     {
         CCSize screenSize = CCDirector::sharedDirector()->getWinSize();
-        CCMenu* originalMenu = as<CCMenu*>(m_mainLayer->getChildByID("button-menu"));
+        CCMenu* originalMenu = static_cast<CCMenu*>(m_mainLayer->getChildByID("button-menu"));
         
         //creates menus for colors and text
         auto buttonColorMenu = CCMenu::create();
@@ -237,7 +239,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
             auto colorButton = CCMenuItemSpriteExtra::create(GJItemIcon::createBrowserItem(unlockType, iconId), this, menu_selector(MyItemInfoPopup::onColorClick));
             if (i == 3 && !m_fields->profileList.back()->m_score->m_glowEnabled) 
                 colorButton = CCMenuItemSpriteExtra::create(GJItemIcon::createBrowserItem(UnlockType::ShipFire, 1), this, nullptr);
-            colorButton->setUserObject(new BetterUnlockInfo_Params(iconId, unlockType));
+            colorButton->setUserObject(new IconInfo(iconId, unlockType));
             colorButton->m_baseScale = 0.8f;
             colorButton->setScale(0.8f);
             colorButton->setID(id);
@@ -258,7 +260,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         //shows popup
         for (auto button : CCArrayExt<CCMenuItemSpriteExtra*>(m_mainLayer->getChildByID("button-color-menu")->getChildren()) )
             button->setTag(-1);
-        auto parameters = as<BetterUnlockInfo_Params*>(as<CCNode*>(sender)->getUserObject());
+        auto parameters = static_cast<IconInfo*>(static_cast<CCNode*>(sender)->getUserObject());
         
         //for equiping cuz glow uses col2
         sender->setTag(1);
@@ -273,13 +275,13 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         //doesnt add the button if text contains "unlock" except for secrets
         if (labelText.find("unlock") != std::string::npos && labelText.find("secret is required") == std::string::npos && labelText.find("hidden treasure") == std::string::npos) return;
         
-        auto originalMenu = as<CCMenu*>(m_mainLayer->getChildByID("button-menu"));
+        auto originalMenu = static_cast<CCMenu*>(m_mainLayer->getChildByID("button-menu"));
         auto infoButton = CCMenuItemSpriteExtra::create(CCSprite::createWithSpriteFrameName("GJ_infoIcon_001.png"), this, menu_selector(MyItemInfoPopup::onDetailButtonClick));
         infoButton->setID("infoButton");
         infoButton->m_baseScale = 0.7f;
         infoButton->setScale(0.7f);
         infoButton->setPosition(CCPoint(118, 102));
-        infoButton->setUserObject(new BetterUnlockInfo_Params(iconId, unlockType));
+        infoButton->setUserObject(new IconInfo(iconId, unlockType));
         originalMenu->addChild(infoButton);
     }
     
@@ -287,7 +289,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
     {
         std::string labelText = textFromArea();
 
-        auto parameters = as<BetterUnlockInfo_Params*>(as<CCNode*>(sender)->getUserObject());
+        auto parameters = static_cast<IconInfo*>(static_cast<CCNode*>(sender)->getUserObject());
         
         if (labelText.find("buy") != std::string::npos) 
         {
@@ -305,7 +307,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
             int price;
             
             for (auto list : json)
-                if (list["UnlockType"].asInt().unwrap() == as<int>(parameters->m_UnlockType))
+                if (list["UnlockType"].asInt().unwrap() == static_cast<int>(parameters->m_UnlockType))
                     for (auto item : list["items"])
                         if (item["IconId"].asInt().unwrap() == parameters->m_IconId)
                         {
@@ -334,7 +336,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
                             //buy data into popup, so can update garage
                             if (CCScene::get()->getChildByID("GJGarageLayer") != nullptr)
                             {
-                                this->setUserObject(new BetterUnlockInfo_Params(
+                                this->setUserObject(new IconInfo(
                                     item["IconId"].asInt().unwrap(),
                                     parameters->m_UnlockType, 
                                     item["Price"].asInt().unwrap(),
@@ -347,9 +349,9 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
                                 GJStoreItem::create(
                                     item["ShopItemId"].asInt().unwrap(),
                                     item["IconId"].asInt().unwrap(),
-                                    as<int>(parameters->m_UnlockType),
+                                    static_cast<int>(parameters->m_UnlockType),
                                     item["Price"].asInt().unwrap(),
-                                    as<ShopType>(item["ShopType"].asInt().unwrap())
+                                    static_cast<ShopType>(item["ShopType"].asInt().unwrap())
                                 )
                             )->show();
                             goto buyLoopEnd;
@@ -411,7 +413,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
             matjson::Value json = matjson::parse(file).unwrap();
             
             for (auto list : json)
-                if (list["UnlockType"].asInt().unwrap() == as<int>(parameters->m_UnlockType))
+                if (list["UnlockType"].asInt().unwrap() == static_cast<int>(parameters->m_UnlockType))
                     for (auto item : list["chests"])
                         if (item["IconId"].asInt().unwrap() == parameters->m_IconId)
                         {
@@ -433,7 +435,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
             matjson::Value json = matjson::parse(file).unwrap();
             
             for (auto list : json)
-                if (list["UnlockType"].asInt().unwrap() == as<int>(parameters->m_UnlockType))
+                if (list["UnlockType"].asInt().unwrap() == static_cast<int>(parameters->m_UnlockType))
                     for (auto item : list["chests"])
                         if (item["IconId"].asInt().unwrap() == parameters->m_IconId)
                         {
@@ -473,7 +475,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
             
             //find clicked item in json
             for (auto list : json)
-                if (list["UnlockType"].asInt().unwrap() == as<int>(parameters->m_UnlockType))
+                if (list["UnlockType"].asInt().unwrap() == static_cast<int>(parameters->m_UnlockType))
                     for (auto item : list["items"])
                         if (item["IconId"].asInt().unwrap() == parameters->m_IconId)
                         {
@@ -541,7 +543,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
     
     std::string textFromArea()
     {
-        auto textArea = as<TextArea*>(m_mainLayer->getChildByID("description-area"));
+        auto textArea = static_cast<TextArea*>(m_mainLayer->getChildByID("description-area"));
         
         //conflict MH
         if (textArea == nullptr)
@@ -609,23 +611,22 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
     {
         web::WebRequest req = web::WebRequest();
         req.timeout(std::chrono::seconds(3));
-        req.get("https://raw.githubusercontent.com/Rynat86/Better-Unlock-Info/refs/heads/main/resources/jsons/wraith.json").listen(
-        [chestId] (web::WebResponse* res)
-        {
-            std::string desc = "You can unlock this item at <cj>The Wraith</c> by entering the code <cg>";
-            if (!res->ok())
+        m_fields->listener.spawn(
+            req.get("https://raw.githubusercontent.com/Rynat86/Better-Unlock-Info/refs/heads/main/resources/jsons/wraith.json"),
+            [chestId] (web::WebResponse res)
             {
-                desc += "[Web request error, check if you're connected]</c>";
-                FLAlertLayer::create(nullptr, "Oh no!", desc, "OK", nullptr, 400)->show();
-                return;
+                std::string desc = "You can unlock this item at <cj>The Wraith</c> by entering the code <cg>";
+                if (!res.ok())
+                {
+                    desc += "[Web request error, check if you're connected]</c>";
+                    FLAlertLayer::create(nullptr, "Oh no!", desc, "OK", nullptr, 400)->show();
+                    return;
+                }
+                
+                matjson::Value json = res.json().unwrap();
+                desc += json[chestId].asString().unwrap() + "</c>";
+                FLAlertLayer::create(nullptr, "Which one? This one!", desc, "OK", nullptr, 350)->show();
             }
-            
-            matjson::Value json = res->json().unwrap();
-            desc += json[chestId].asString().unwrap() + "</c>";
-            FLAlertLayer::create(nullptr, "Which one? This one!", desc, "OK", nullptr, 350)->show();
-        },
-        [] (auto) { /*request is in progress*/ },
-        [] () { /*request cancelled*/ }
         );
     }
 
@@ -653,7 +654,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         std::ifstream achifile(Mod::get()->getResourcesDir() / "achievements.json");
         matjson::Value achi = matjson::parse(achifile).unwrap();
         for (auto list : achi)
-            if (list["UnlockType"].asInt().unwrap() == as<int>(unlockType))
+            if (list["UnlockType"].asInt().unwrap() == static_cast<int>(unlockType))
                 for (auto item : list["items"])
                     if (item["IconId"].asInt().unwrap() == iconId)
                     {
@@ -707,21 +708,21 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
             switch (iconId)
             {
             case 59:
-            achiobj->currentValue = GSM->getCollectedCoinsForLevel(as<GJGameLevel*>(GLM->m_mainLevels->objectForKey("20")));
+            achiobj->currentValue = GSM->getCollectedCoinsForLevel(static_cast<GJGameLevel*>(GLM->m_mainLevels->objectForKey("20")));
             break;
             
             case 60:
-            achiobj->currentValue = GSM->getCollectedCoinsForLevel(as<GJGameLevel*>(GLM->m_mainLevels->objectForKey("18")));
+            achiobj->currentValue = GSM->getCollectedCoinsForLevel(static_cast<GJGameLevel*>(GLM->m_mainLevels->objectForKey("18")));
             break;
             
             case 14:
-            achiobj->currentValue = GSM->getCollectedCoinsForLevel(as<GJGameLevel*>(GLM->m_mainLevels->objectForKey("14")));
+            achiobj->currentValue = GSM->getCollectedCoinsForLevel(static_cast<GJGameLevel*>(GLM->m_mainLevels->objectForKey("14")));
             break;
             
             default: achiobj->currentValue = -1; break;
             }
             break;
-        case -5 : achiobj->currentValue = as<GJGameLevel*>(GLM->m_mainLevels->objectForKey(std::to_string(std::atoi(achiobj->achiLong.substr(18, 2).c_str()))))->m_practicePercent == 100; break;
+        case -5 : achiobj->currentValue = static_cast<GJGameLevel*>(GLM->m_mainLevels->objectForKey(std::to_string(std::atoi(achiobj->achiLong.substr(18, 2).c_str()))))->m_practicePercent == 100; break;
         case -6 : achiobj->currentValue = GSM->hasCompletedMainLevel(std::atoi(achiobj->achiLong.substr(18, 2).c_str())); break;
         case -7 :
             if (achiobj->maxValue > 1) achiobj->currentValue = GSM->getStat("9");
@@ -754,7 +755,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
             else achiobj->currentValue = GSM->hasCompletedMainLevel(14);
             break;
         case -11 : achiobj->currentValue = GSM->hasCompletedMainLevel(achiobj->achiLong.at(19) - '0' + 5000); break;
-        case -12 : achiobj->currentValue = GSM->getCollectedCoinsForLevel(as<GJGameLevel*>(GLM->m_mainLevels->objectForKey(std::string("50").append(achiobj->achiLong.substr(18, 2))))); break;
+        case -12 : achiobj->currentValue = GSM->getCollectedCoinsForLevel(static_cast<GJGameLevel*>(GLM->m_mainLevels->objectForKey(std::string("50").append(achiobj->achiLong.substr(18, 2))))); break;
         case -13 :
         {
             /*FriendsProfilePage::create error
@@ -762,7 +763,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
             for (auto node : CCArrayExt<CCNode*>(friends->m_mainLayer->getChildren()))
                 if (typeinfo_cast<CCLabelBMFont*>(node) != nullptr)
                 {
-                    std::string nodetext = as<CCLabelBMFont*>(node)->getString();
+                    std::string nodetext = static_cast<CCLabelBMFont*>(node)->getString();
                     std::string number = nodetext.substr(nodetext.find(":") + 2, nodetext.length() - 1 - nodetext.find(":") + 2);
                     int num = std::atoi(number.c_str());
                     if (num > 0) currentValue = num;
@@ -795,7 +796,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
             std::ifstream file(Mod::get()->getResourcesDir() / "shops.json");
             matjson::Value json = matjson::parse(file).unwrap();
             for (auto list : json)
-                if (list["UnlockType"].asInt().unwrap() == as<int>(unlockType))
+                if (list["UnlockType"].asInt().unwrap() == static_cast<int>(unlockType))
                     for (auto item : list["items"])
                         if (item["IconId"].asInt().unwrap() == iconId)
                             if (item["ShopType"].asInt().unwrap() == 4)
@@ -809,7 +810,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
             std::ifstream file(Mod::get()->getResourcesDir() / "chests.json");
             matjson::Value json = matjson::parse(file).unwrap();
             for (auto list : json)
-                if (list["UnlockType"].asInt().unwrap() == as<int>(unlockType))
+                if (list["UnlockType"].asInt().unwrap() == static_cast<int>(unlockType))
                     for (auto item : list["chests"])
                         if (item["IconId"].asInt().unwrap() == iconId)
                             achiobj->sprite = "chest_0" + std::to_string(item["GJRewardType"].asInt().unwrap()) + "_02_001.png";
@@ -823,7 +824,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
             matjson::Value json = matjson::parse(file).unwrap();
             
             for (auto list : json)
-                if (list["UnlockType"].asInt().unwrap() == as<int>(unlockType))
+                if (list["UnlockType"].asInt().unwrap() == static_cast<int>(unlockType))
                     for (auto item : list["chests"])
                         if (item["IconId"].asInt().unwrap() == iconId)
                             if ((item["ChestId"].asString().unwrap())[0] == 'w')
@@ -839,7 +840,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
             std::string chestId = "";
             
             for (auto list : json)
-                if (list["UnlockType"].asInt().unwrap() == as<int>(unlockType))
+                if (list["UnlockType"].asInt().unwrap() == static_cast<int>(unlockType))
                     for (auto item : list["chests"])
                         if (item["IconId"].asInt().unwrap() == iconId)
                             chestId = item["ChestId"].asString().unwrap();
@@ -922,7 +923,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         slider->setScale(0.45f);
         slider->setAnchorPoint(CCPoint(0,0));
         slider->setPosition(CCPoint(81, -85));
-        slider->setValue(as<float>(achiobj->currentValue) / as<float>(achiobj->maxValue));
+        slider->setValue(static_cast<float>(achiobj->currentValue) / static_cast<float>(achiobj->maxValue));
         menu->addChild(slider);
         
         
@@ -1009,7 +1010,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
     {
         if (textFromArea().find("2.21") != std::string::npos) return; //note, 2.21
         
-        CCMenu* originalMenu = as<CCMenu*>(m_mainLayer->getChildByID("button-menu"));
+        CCMenu* originalMenu = static_cast<CCMenu*>(m_mainLayer->getChildByID("button-menu"));
         CCSprite* icon = CCSprite::createWithSpriteFrameName("GJ_lock_001.png");
         icon->setID("completionIcon");
         icon->setScale(0.6f);
@@ -1029,14 +1030,14 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
     {
         if (!trueIsItemUnlocked(iconId, unlockType)) return;
         
-        CCMenu* originalMenu = as<CCMenu*>(m_mainLayer->getChildByID("button-menu"));
+        CCMenu* originalMenu = static_cast<CCMenu*>(m_mainLayer->getChildByID("button-menu"));
         auto spr = CircleButtonSprite::create(CCLabelBMFont::create("Use", "bigFont.fnt"));
         auto equipButton = CCMenuItemSpriteExtra::create(spr, this, menu_selector(MyItemInfoPopup::onEquipButtonClick));
         equipButton->setID("equipButton");
         equipButton->m_baseScale = 0.6f;
         equipButton->setScale(0.6f);
         
-        // the popup is always 300x230, X = half of sprite + 6 for space, Y = calc center of screen from menu + same as X
+        // the popup is always 300x230, X = half of sprite + 6 for space, Y = calc center of screen from menu + same static_cast X
         CCSize screenSize = CCDirector::sharedDirector()->getWinSize();
         equipButton->setPosition(CCPoint( 
             -150 + equipButton->getContentSize().width * 0.6 / 2 + 6,
@@ -1048,17 +1049,17 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         if (spinoff != nullptr)
             equipButton->setPositionY(equipButton->getPositionY() - spinoff->getContentHeight() * 0.4f - 5);
         
-        equipButton->setUserObject(new BetterUnlockInfo_Params(iconId, unlockType));
+        equipButton->setUserObject(new IconInfo(iconId, unlockType));
         originalMenu->addChild(equipButton);
     }
     
     void onEquipButtonClick(CCObject* sender) 
     {
-        auto parameters = as<BetterUnlockInfo_Params*>(as<CCNode*>(sender)->getUserObject());     
+        auto parameters = static_cast<IconInfo*>(static_cast<CCNode*>(sender)->getUserObject());     
         auto GM = GameManager::sharedState();      
         
         //note save it idk
-        switch (as<int>(parameters->m_UnlockType))
+        switch (static_cast<int>(parameters->m_UnlockType))
         {
         case 1: GM->setPlayerFrame(parameters->m_IconId); break;
         case 2: GM->setPlayerColor(parameters->m_IconId); break;
@@ -1133,7 +1134,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
         if (cvoltonButton != nullptr)
             cvoltonButton->removeFromParent();
         
-        auto authorButton = as<CCMenuItemSpriteExtra*>(buttonMenu->getChildByID("author-button"));
+        auto authorButton = static_cast<CCMenuItemSpriteExtra*>(buttonMenu->getChildByID("author-button"));
         if (authorButton == nullptr) return;
         
         authorButton->setPosition(CCPoint(0, 173));

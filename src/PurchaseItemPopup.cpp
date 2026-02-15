@@ -1,6 +1,6 @@
 #include "Includes.hpp"
 #include <Geode/modify/PurchaseItemPopup.hpp>
-
+#include "IconInfo.hpp"
 
 // fix sound and "refresh" garage layer
 class $modify(PurchaseItemPopup)
@@ -17,12 +17,12 @@ class $modify(PurchaseItemPopup)
             GJGarageLayer* garage = scene->getChildByType<GJGarageLayer>(0);
             if (garage != nullptr)
             {
-                auto parameters = as<BetterUnlockInfo_Params*>(CCScene::get()->getChildByType<ItemInfoPopup>(0)->getUserObject());
+                auto parameters = static_cast<IconInfo*>(CCScene::get()->getChildByType<ItemInfoPopup>(0)->getUserObject());
                 
                 //udpate money label
-                CCLabelBMFont* money = as<CCLabelBMFont*>(garage->getChildByID("orbs-label"));
+                CCLabelBMFont* money = static_cast<CCLabelBMFont*>(garage->getChildByID("orbs-label"));
                 if (parameters->m_ShopType == 4)
-                    money = as<CCLabelBMFont*>(garage->getChildByID("diamond-shards-label"));
+                    money = static_cast<CCLabelBMFont*>(garage->getChildByID("diamond-shards-label"));
                 money->setString(std::to_string(std::atoi(money->getString()) - parameters->m_Price).c_str());
                 
                 //get button
@@ -30,7 +30,7 @@ class $modify(PurchaseItemPopup)
                 switch (parameters->m_UnlockType) 
                 {
                     case UnlockType::ShipFire:
-                        iconButton = as<CCMenuItemSpriteExtra*>(
+                        iconButton = static_cast<CCMenuItemSpriteExtra*>(
                             garage->
                             getChildByType<ListButtonBar>(0)->
                             getChildByType<ListButtonBar>(0)->
@@ -43,7 +43,7 @@ class $modify(PurchaseItemPopup)
                     break;
                     
                     case UnlockType::GJItem:
-                        iconButton = as<CCMenuItemSpriteExtra*>(
+                        iconButton = static_cast<CCMenuItemSpriteExtra*>(
                             garage->
                             getChildByType<ListButtonBar>(0)->
                             getChildByType<CCMenu>(0)->
@@ -53,7 +53,7 @@ class $modify(PurchaseItemPopup)
                     
                     case UnlockType::Col1:
                     case UnlockType::Col2:
-                        iconButton = as<CCMenuItemSpriteExtra*>(
+                        iconButton = static_cast<CCMenuItemSpriteExtra*>(
                             garage->
                             getChildByType<CharacterColorPage>(0)->
                             getChildByType<CCLayer>(0)->
@@ -63,7 +63,7 @@ class $modify(PurchaseItemPopup)
                     break;
                       
                     default:
-                        iconButton = as<CCMenuItemSpriteExtra*>(
+                        iconButton = static_cast<CCMenuItemSpriteExtra*>(
                             garage->
                             getChildByType<ListButtonBar>(0)->
                             getChildByType<BoomScrollLayer>(0)->
@@ -114,7 +114,7 @@ class $modify(PurchaseItemPopup)
             
             ProfilePage* profile = scene->getChildByType<ProfilePage>(0);
             if (profile != nullptr)
-                scene->removeChild(as<CCNode*>(scene->getChildren()->objectAtIndex(scene->getChildrenCount()-1))); //remove item popup
+                scene->removeChild(static_cast<CCNode*>(scene->getChildren()->objectAtIndex(scene->getChildrenCount()-1))); //remove item popup
             
         }
     }

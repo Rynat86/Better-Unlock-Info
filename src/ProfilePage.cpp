@@ -5,12 +5,6 @@
 //adds jetpack and death effect to profile and makes icons into buttons that show unlock popup, fps warning popoup if funny
 class $modify(MyProfilePage, ProfilePage) 
 {
-    static void onModify(auto& self)
-    {
-        //idk why this is here anymore xd
-        //(void) self.setHookPriority("ProfilePage::loadPageFromUserInfo", -1000);
-    }
-    
 	void loadPageFromUserInfo(GJUserScore* p0) 
     {
 		ProfilePage::loadPageFromUserInfo(p0);
@@ -69,6 +63,39 @@ class $modify(MyProfilePage, ProfilePage)
         }
 	}
     
+    void fixGlow(CCNode* playerMenu)
+    {
+        auto simpleIcon = typeinfo_cast<SimplePlayer*>(playerMenu->getChildByID("player-icon")->getChildByID("player-icon"));
+        if (!simpleIcon->m_hasCustomGlowColor)
+            m_score->m_color3 = m_score->m_color2;
+    }
+    
+    void replacePlayerIconNodeWithButton(std::string nodeId, CCNode* playerMenu)
+    {
+        //creates button from icon
+        auto iconPlayer = playerMenu->getChildByID(nodeId)->getChildByType<SimplePlayer>(0);
+        auto iconButton = CCMenuItemSpriteExtra::create(iconPlayer, this, menu_selector(MyProfilePage::onIconClick));
+        
+        //swaps with original so its on correct place
+        playerMenu->addChild(iconButton);
+        swapChildIndices(playerMenu->getChildByID(nodeId), iconButton);
+        playerMenu->removeChildByID(nodeId);
+        
+        //conflict animated profiles
+        iconButton->removeAllChildren();
+        iconButton->addChild(iconPlayer);
+        
+        //size
+        iconButton->setContentSize(CCSize(42.6f, 42.6f));
+        if (nodeId == "player-wave")
+            iconButton->setContentSize(CCSize(36.6f, 42.6f));
+        
+        //fix pos
+        iconPlayer->setPosition(CCPoint(21.3f, 21.3f));
+        
+        iconButton->setID(nodeId);
+    }
+    
     void addJetpack(CCNode* playerMenu)
     {
         //set up icon
@@ -122,63 +149,26 @@ class $modify(MyProfilePage, ProfilePage)
         playerMenu->addChild(deathEffectButton);
     }
     
-    void replacePlayerIconNodeWithButton(std::string nodeId, CCNode* playerMenu)
-    {
-        //creates button from icon        
-        auto iconPlayer = playerMenu->getChildByID(nodeId)->getChildByType<SimplePlayer>(0);
-        auto iconButton = CCMenuItemSpriteExtra::create(iconPlayer, this, menu_selector(MyProfilePage::onIconClick));
-        
-        //swaps with original so its on correct place
-        playerMenu->addChild(iconButton);
-        swapChildIndices(playerMenu->getChildByID(nodeId), iconButton);
-        playerMenu->removeChildByID(nodeId);
-        
-        //conflict animated profiles
-        iconButton->removeAllChildren();
-        iconButton->addChild(iconPlayer);
-        
-        //size
-        iconButton->setContentSize(CCSize(42.6f, 42.6f));
-        if (nodeId == "player-wave")
-            iconButton->setContentSize(CCSize(36.6f, 42.6f));
-        
-        //fix pos
-        iconPlayer->setPosition(CCPoint(21.3f, 21.3f));
-        
-        iconButton->setID(nodeId);
-    }
-
-    IconObject getUnlockData(std::string buttonID, GJUserScore* m_score)
-    {
-        std::unordered_map<std::string, IconObject> buttonToIconObject = 
-        {
-            {"player-icon", {UnlockType::Cube, m_score->m_playerCube}},
-            {"player-ship", {UnlockType::Ship, m_score->m_playerShip}},
-            {"player-ball", {UnlockType::Ball, m_score->m_playerBall}},
-            {"player-ufo", {UnlockType::Bird, m_score->m_playerUfo}},
-            {"player-wave", {UnlockType::Dart, m_score->m_playerWave}},
-            {"player-robot", {UnlockType::Robot, m_score->m_playerRobot}},
-            {"player-spider", {UnlockType::Spider, m_score->m_playerSpider}},
-            {"player-swing", {UnlockType::Swing, m_score->m_playerSwing}},
-            {"player-jetpack", {UnlockType::Jetpack, m_score->m_playerJetpack}},
-            {"player-deathEffect", {UnlockType::Death, m_score->m_playerExplosion}}
-        };
-    
-        return buttonToIconObject[buttonID];
-    }
-
 	void onIconClick(CCObject* sender)
     {
         //shows popup
-        CCMenuItemSpriteExtra* button = as<CCMenuItemSpriteExtra*>(sender);
-        IconObject icon = getUnlockData(button->getID(), m_score);
-        ItemInfoPopup::create(icon.iconId, icon.unlockType)->show();
+        CCMenuItemSpriteExtra* button = static_cast<CCMenuItemSpriteExtra*>(sender);
+
+        std::unordered_map<std::string, std::pair<int, UnlockType>> buttonToIconObject = 
+        {
+            {"player-icon", {m_score->m_playerCube, UnlockType::Cube}},
+            {"player-ship", {m_score->m_playerShip, UnlockType::Ship}},
+            {"player-ball", {m_score->m_playerBall, UnlockType::Ball}},
+            {"player-ufo", {m_score->m_playerUfo, UnlockType::Bird}},
+            {"player-wave", {m_score->m_playerWave, UnlockType::Dart}},
+            {"player-robot", {m_score->m_playerRobot, UnlockType::Robot}},
+            {"player-spider", {m_score->m_playerSpider, UnlockType::Spider}},
+            {"player-swing", {m_score->m_playerSwing, UnlockType::Swing}},
+            {"player-jetpack", {m_score->m_playerJetpack, UnlockType::Jetpack}},
+            {"player-deathEffect", {m_score->m_playerExplosion, UnlockType::Death}}
+        };
+        
+        std::pair<int, UnlockType> icon = buttonToIconObject[button->getID()];
+        ItemInfoPopup::create(icon.first, icon.second)->show();
 	}
-    
-    void fixGlow(CCNode* playerMenu)
-    {
-        auto simpleIcon = typeinfo_cast<SimplePlayer*>(playerMenu->getChildByID("player-icon")->getChildByID("player-icon"));
-        if (!simpleIcon->m_hasCustomGlowColor)
-            m_score->m_color3 = m_score->m_color2;
-    }
 };
