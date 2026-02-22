@@ -849,34 +849,7 @@ class $modify(MyItemInfoPopup, ItemInfoPopup)
             {
                 CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile("GauntletSheet.plist", "GauntletSheet.png");
                 int num = std::atoi(chestId.substr(2, std::string::npos).c_str());
-                
-                switch (num)
-                {
-                case 1: achiobj->sprite = "island_fire_001.png"; break;
-                case 2: achiobj->sprite = "island_ice_001.png"; break;
-                case 3: achiobj->sprite = "island_poison_001.png"; break;
-                case 4: achiobj->sprite = "island_shadow_001.png"; break;
-                case 5: achiobj->sprite = "island_lava_001.png"; break;
-                case 6: achiobj->sprite = "island_bonus_001.png"; break;
-                case 7: achiobj->sprite = "island_chaos_001.png"; break;
-                case 8: achiobj->sprite = "island_demon_001.png"; break;
-                case 9: achiobj->sprite = "island_time_001.png"; break;
-                case 10: achiobj->sprite = "island_crystal_001.png"; break;
-                case 11: achiobj->sprite = "island_magic_001.png"; break;
-                case 12: achiobj->sprite = "island_spike_001.png"; break;
-                case 13: achiobj->sprite = "island_monster_001.png"; break;
-                case 14: achiobj->sprite = "island_doom_001.png"; break;
-                case 15: achiobj->sprite = "island_death_001.png"; break;
-                case 51: achiobj->sprite = "island_ncs01_001.png"; break;
-                case 52: achiobj->sprite = "island_ncs02_001.png"; break;
-                case 53: achiobj->sprite = "island_space_001.png"; break;
-                case 54: achiobj->sprite = "island_cosmos_001.png"; break;
-                default:
-                    std::string numtext = "";
-                    if (num - 15 < 10) numtext = "0";
-                    numtext.append(std::to_string(num-15));
-                    achiobj->sprite = std::string("island_new").append(numtext).append("_001.png");
-                }
+                achiobj->sprite = GauntletNode::frameForType((GauntletType)num);
                 achiobj->scale = 0.2f;
                 achiobj->moveY = -3;
             }

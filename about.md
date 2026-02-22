@@ -36,3 +36,4 @@ This is my first mod so it's possible that there could be incompatibilities.
 - To see how many friends you have in a friend unlock you need to open the popup twice
 - I didnt really pay attention to spinoff games unlocks cuz i think it's still broken to merge saves, idk tho I could be wrong, same goes for ad chest unlocks
 - The unlock progress bar doesn't currectly show up for creator related unlocks
+- Certain Wraith unlocks don't have a description, this is robtops issue

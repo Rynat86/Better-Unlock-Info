@@ -1,3 +1,6 @@
+# 1.3.2
+ - Fixed crash when opening certain gauntlet unlocks
+
 # 1.3.1
  - Updated to 2.2081
 

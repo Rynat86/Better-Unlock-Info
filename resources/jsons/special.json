@@ -22,6 +22,8 @@
             {"ChestId":"g_44","IconId":453},
             {"ChestId":"g_49","IconId":482},
             {"ChestId":"g_51","IconId":452},
+            {"ChestId":"g_55","IconId":484},
+            {"ChestId":"g_60","IconId":372},
             {"ChestId":"0001","IconId":103},
             {"ChestId":"0002","IconId":106},
             {"ChestId":"0005","IconId":104},
@@ -40,13 +42,13 @@
             {"ChestId":"w_3","IconId":309,"Code":"skyline pt 2"},
             {"ChestId":"w_4","IconId":343,"Code":"[This icon is not yet available]"},
             {"ChestId":"w_5","IconId":390,"Code":"[This icon is not yet available]"},
-            {"ChestId":"w_6","IconId":409,"Code":"backondash"},
+            {"ChestId":"w_6","IconId":409,"Code":"back on dash"},
             {"ChestId":"w_7","IconId":440,"Code":"[This icon is not yet available]"},
             {"ChestId":"w_8","IconId":445,"Code":"[This icon is not yet available]"},
             {"ChestId":"w_9","IconId":485,"Code":"gd awards"}
         ]
     },
-    { 
+    {
         "UnlockType":2, "chests":
         [
             {"ChestId":"0016","IconId":85},
@@ -79,6 +81,8 @@
             {"ChestId":"g_40","IconId":166},
             {"ChestId":"g_50","IconId":90},
             {"ChestId":"g_52","IconId":117},
+            {"ChestId":"g_57","IconId":102},
+            {"ChestId":"g_59","IconId":115},
             {"ChestId":"0008","IconId":50},
             {"ChestId":"0014","IconId":52},
             {"ChestId":"0021","IconId":53},
@@ -98,6 +102,7 @@
             {"ChestId":"g_16","IconId":67},
             {"ChestId":"g_46","IconId":103},
             {"ChestId":"g_48","IconId":82},
+            {"ChestId":"g_56","IconId":59},
             {"ChestId":"0004","IconId":23},
             {"ChestId":"0009","IconId":41},
             {"ChestId":"0018","IconId":44},
@@ -111,14 +116,16 @@
         "UnlockType":6, "chests":
         [
             {"ChestId":"g_21","IconId":137},
+            {"ChestId":"g_24","IconId":41},
             {"ChestId":"g_47","IconId":119},
             {"ChestId":"g_53","IconId":133},
+            {"ChestId":"g_58","IconId":120},
             {"ChestId":"0006","IconId":27},
             {"ChestId":"0017","IconId":36},
             {"ChestId":"pr_3","IconId":146},
             {"ChestId":"w_18","IconId":63,"Code":"button masher"},
             {"ChestId":"w_19","IconId":116,"Code":"[This icon is not yet available]"},
-            {"ChestId":"w_20","IconId":138,"Code":"cheatcodes"},
+            {"ChestId":"w_20","IconId":138,"Code":"cheat codes"},
             {"ChestId":"w_21","IconId":147,"Code":"[This icon is not yet available]"}
         ]
     },
@@ -142,7 +149,7 @@
             {"ChestId":"pr_2","IconId":48},
             {"ChestId":"pr_4","IconId":40},
             {"ChestId":"pr_9","IconId":66},
-            {"ChestId":"w_26","IconId":37,"Code":"backstreetboy"}
+            {"ChestId":"w_26","IconId":37,"Code":"backstreet boy"}
         ]
     },
     {
@@ -167,7 +174,7 @@
             {"ChestId":"g_36","IconId":31},
             {"ChestId":"pr_1","IconId":19},
             {"ChestId":"pr_10","IconId":36},
-            {"ChestId":"w_28","IconId":17,"Code":"noelelectra"}
+            {"ChestId":"w_28","IconId":17,"Code":"noel electra"}
         ]
     },
     {
